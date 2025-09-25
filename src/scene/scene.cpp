@@ -192,12 +192,17 @@ static SceneObject* deserializeObject(const json& j, int screenWidth, int screen
     glm::vec3 color(j["color"][0], j["color"][1], j["color"][2]);
     glm::vec3 rotation(j["rotation"][0], j["rotation"][1], j["rotation"][2]);
     bool active = j.value("active", true);
+    std::string tag = j.value("tag", "");
 
     std::string type = j.value("type", "unknown");
     if (type == "cube") {
-        return new Cube(position, size, color, rotation, active);
+        Cube *r = new Cube(position, size, color, rotation, active);
+        r->setTag(tag);
+        return r;
     } else if (type == "plane") {
-        return new Plane(position, size, color, rotation, active);
+        Plane *r = new Plane(position, size, color, rotation, active);
+        r->setTag(tag);
+        return r;
     } else if (type == "mesh") {
         std::string objPath = j.value("objPath", "");
         std::string texturePath = j.value("texture", "");
@@ -211,13 +216,17 @@ static SceneObject* deserializeObject(const json& j, int screenWidth, int screen
         if (!normalPath.empty()) mat.setNormalMap(normalPath);
         */
         Mesh* mesh = new Mesh(objPath, mat, position, size, color, rotation, active);
-
+        mesh->setTag(tag);
         return mesh;
     } else if (type == "camera") {
-        return new Camera(screenWidth, screenHeight, position, rotation);
+        Camera* cam = new Camera(screenWidth, screenHeight, position, rotation);
+        cam->setTag(tag);
+        return cam;
     } else if (type == "light") {
         int intensity = j.value("intensity", 1.0f);
-        return new PointLight(position, color, intensity, active);
+        PointLight* light = new PointLight(position, color, intensity, active);
+        light->setTag(tag);
+        return light;
     }
     return nullptr;
 }

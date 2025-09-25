@@ -20,6 +20,7 @@ private:
     float health = 100;
 
     Scene* scene_;
+    float time = 0;
     
     PointLight* light_ = nullptr;
 };
