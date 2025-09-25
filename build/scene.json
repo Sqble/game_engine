@@ -1,0 +1,1750 @@
+{
+    "activeCamera": 0,
+    "name": "scene",
+    "objects": [
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                -0.013374283909797668,
+                -0.30309081077575684,
+                13.941900253295898
+            ],
+            "rotation": [
+                -6.37434196472168,
+                -31.404150009155273,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                0.0,
+                10.0,
+                0.0
+            ],
+            "rotation": [
+                -1.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                0.8899999856948853,
+                0.7689999938011169,
+                0.5600000023841858
+            ],
+            "intensity": 2.0,
+            "position": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "rotation": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "light"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/table.obj",
+            "position": [
+                1.0,
+                -1.2999999523162842,
+                -1.899999976158142
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/table.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/computer.obj",
+            "position": [
+                1.0,
+                -0.20000000298023224,
+                -2.0999999046325684
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/computer.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/shelf.obj",
+            "position": [
+                2.0,
+                -2.9000000953674316,
+                10.5
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/shelf.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/crate.obj",
+            "position": [
+                2.0,
+                -2.5,
+                10.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/crate.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/crate.obj",
+            "position": [
+                2.0,
+                -1.2999999523162842,
+                11.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/crate.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/crate.obj",
+            "position": [
+                2.0,
+                -1.2999999523162842,
+                10.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/crate.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/crate.obj",
+            "position": [
+                2.0,
+                -0.10000000149011612,
+                11.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/crate.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/crate.obj",
+            "position": [
+                2.0,
+                -0.10000000149011612,
+                10.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/crate.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/stool_rough.png",
+            "objPath": "../assets/stool.obj",
+            "position": [
+                1.5,
+                -3.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                45.0,
+                0.0
+            ],
+            "roughnessMap": "../assets/stool_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/stool.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                0.0,
+                -3.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                0.0,
+                -3.0,
+                6.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                0.0,
+                1.5,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                180.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                3.0,
+                -0.75,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                0.75,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                -3.0,
+                -0.75,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                -90.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                0.75,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                0.0,
+                -0.75,
+                -3.0
+            ],
+            "rotation": [
+                90.0,
+                0.0,
+                0.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                0.75
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "normalMap": "../assets/door_frame_rough.png",
+            "objPath": "../assets/door_frame.obj",
+            "position": [
+                0.0,
+                -3.0,
+                3.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "roughnessMap": "../assets/door_frame_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/door_frame.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/crate.obj",
+            "position": [
+                2.0,
+                -2.5,
+                11.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/crate.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                0.0,
+                1.5,
+                6.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                180.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                1.0,
+                6.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                3.0,
+                -0.75,
+                6.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                0.75,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                -3.0,
+                -0.75,
+                6.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                -90.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                0.75,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                0.0,
+                -0.75,
+                21.0
+            ],
+            "rotation": [
+                -90.0,
+                0.0,
+                0.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                0.75
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                0.5752838253974915,
+                -0.5003662109375,
+                5.300928115844727
+            ],
+            "rotation": [
+                -0.16735833883285522,
+                -0.048673927783966064,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                0.48203226923942566,
+                -0.5003662109375,
+                6.593267917633057
+            ],
+            "rotation": [
+                -0.16735833883285522,
+                -0.048673927783966064,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                5.605983734130859,
+                2.3000845909118652,
+                5.295872688293457
+            ],
+            "rotation": [
+                -0.161770761013031,
+                -14.172609329223633,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "normalMap": "../assets/bed/bed_normal.png",
+            "objPath": "../assets/bed/bed.obj",
+            "position": [
+                -3.0,
+                -2.9000000953674316,
+                12.779999732971191
+            ],
+            "rotation": [
+                0.0,
+                90.0,
+                0.0
+            ],
+            "roughnessMap": "../assets/bed/bed_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/bed/bed.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                0.18890200555324554,
+                -0.2929692268371582,
+                5.280684471130371
+            ],
+            "rotation": [
+                -0.08772891759872437,
+                -12.544503211975098,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                0.8889999985694885,
+                0.7680000066757202,
+                0.5600000023841858
+            ],
+            "intensity": 1.0,
+            "position": [
+                0.0,
+                1.0,
+                6.0
+            ],
+            "rotation": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "light"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                0.42098090052604675,
+                -0.4013848304748535,
+                5.1245646476745605
+            ],
+            "rotation": [
+                -0.25056689977645874,
+                -12.65317153930664,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                0.256755530834198,
+                -0.4013848304748535,
+                5.993120193481445
+            ],
+            "rotation": [
+                -0.05086463689804077,
+                -12.57749080657959,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                0.27350685000419617,
+                -0.4013848304748535,
+                5.319292068481445
+            ],
+            "rotation": [
+                -0.1651449203491211,
+                -12.522522926330566,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/ladder/ladder_metal.png",
+            "objPath": "../assets/ladder/ladder.obj",
+            "position": [
+                -1.0,
+                -3.0,
+                6.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "roughnessMap": "../assets/ladder/ladder_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/ladder/ladder.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                -0.24479246139526367,
+                -0.2647881507873535,
+                5.737704753875732
+            ],
+            "rotation": [
+                -6.481871604919434,
+                -25.153966903686523,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                0.0,
+                -3.0,
+                12.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                3.0,
+                -0.75,
+                12.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                0.75,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                -3.0,
+                -0.75,
+                12.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                -90.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                0.75,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "normalMap": "../assets/door_frame_rough.png",
+            "objPath": "../assets/door_frame.obj",
+            "position": [
+                0.0,
+                -3.0,
+                15.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "roughnessMap": "../assets/door_frame_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/door_frame.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                -0.1323872208595276,
+                -0.2315044403076172,
+                6.0038065910339355
+            ],
+            "rotation": [
+                -6.5809245109558105,
+                -37.91584777832031,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                0.8880000114440918,
+                0.7680000066757202,
+                0.5600000023841858
+            ],
+            "intensity": 1.0,
+            "position": [
+                0.0,
+                1.0,
+                12.0
+            ],
+            "rotation": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "light"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/shelf.obj",
+            "position": [
+                2.0,
+                -2.9000000953674316,
+                13.5
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/shelf.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                -0.2376796454191208,
+                -0.3663616180419922,
+                6.368485927581787
+            ],
+            "rotation": [
+                -6.332088470458984,
+                -37.75385665893555,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/crate.obj",
+            "position": [
+                2.0,
+                -0.10000000149011612,
+                14.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/crate.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/crate.obj",
+            "position": [
+                2.0,
+                -1.2999999523162842,
+                13.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/crate.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/crate.obj",
+            "position": [
+                2.0,
+                -0.10000000149011612,
+                13.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/crate.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/crate.obj",
+            "position": [
+                2.0,
+                -2.5,
+                14.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/crate.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/crate.obj",
+            "position": [
+                2.0,
+                -1.2999999523162842,
+                14.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/crate.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/crate.obj",
+            "position": [
+                2.0,
+                -2.5,
+                13.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/crate.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                0.0,
+                1.5,
+                12.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                180.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                1.0,
+                6.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                -0.12913863360881805,
+                -0.1760234832763672,
+                6.397253036499023
+            ],
+            "rotation": [
+                -6.411602020263672,
+                -37.7963752746582,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                0.0,
+                -3.0,
+                18.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                0.0,
+                1.5,
+                18.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                180.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                1.0,
+                6.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                3.0,
+                -0.75,
+                18.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                0.75,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "metalnessMap": "../assets/floor_rough.png",
+            "normalMap": "../assets/floor_rough.png",
+            "objPath": "../assets/floor.obj",
+            "position": [
+                -3.0,
+                -0.75,
+                18.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                -90.0
+            ],
+            "roughnessMap": "../assets/floor_rough.png",
+            "size": [
+                0.75,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/rustymetal3.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "normalMap": "../assets/door_frame_rough.png",
+            "objPath": "../assets/door_frame.obj",
+            "position": [
+                0.0,
+                -3.0,
+                9.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "roughnessMap": "../assets/door_frame_rough.png",
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/door_frame.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                0.8880000114440918,
+                0.7680000066757202,
+                0.5600000023841858
+            ],
+            "intensity": 2.0,
+            "position": [
+                1.0,
+                1.0,
+                18.0
+            ],
+            "rotation": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "light"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                0.01929236575961113,
+                -0.1760234832763672,
+                6.2934184074401855
+            ],
+            "rotation": [
+                -6.438960552215576,
+                -37.69557189941406,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/locker/locker_closed.obj",
+            "position": [
+                -2.0,
+                -3.0,
+                10.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/locker/locker_closed.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                0.057637713849544525,
+                -0.1760234832763672,
+                7.626064300537109
+            ],
+            "rotation": [
+                -6.2837443351745605,
+                -31.45196533203125,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/hatch/hatch.obj",
+            "position": [
+                0.0,
+                1.5,
+                6.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                180.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/hatch/hatch.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                0.02301100641489029,
+                -0.4018533229827881,
+                6.267400741577148
+            ],
+            "rotation": [
+                -6.348546504974365,
+                -31.385669708251953,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/CeilingLight/ceiling_light.obj",
+            "position": [
+                0.0,
+                1.5,
+                0.0
+            ],
+            "rotation": [
+                180.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/CeilingLight/ceiling_light.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/CeilingLight/ceiling_light.obj",
+            "position": [
+                0.0,
+                1.5,
+                12.0
+            ],
+            "rotation": [
+                180.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/CeilingLight/ceiling_light.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "objPath": "../assets/CeilingLight/ceiling_light.obj",
+            "position": [
+                0.0,
+                1.5,
+                18.0
+            ],
+            "rotation": [
+                180.0,
+                0.0,
+                0.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "texture": "../assets/CeilingLight/ceiling_light.png",
+            "type": "mesh"
+        },
+        {
+            "active": true,
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "position": [
+                -0.013374283909797668,
+                -0.30309081077575684,
+                13.941900253295898
+            ],
+            "rotation": [
+                -6.37434196472168,
+                -31.404150009155273,
+                -1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": "camera"
+        }
+    ]
+}
