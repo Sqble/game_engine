@@ -1,0 +1,91 @@
+    // Create Scene Objects
+    /*
+    std::vector<PointLight *> pointLights = {
+        new PointLight(glm::vec3(0,0,0),    glm::vec3( 0.890 , 0.769 , 0.424 ),3),
+        //new PointLight(glm::vec3(-5,0,0),  glm::vec3(0,0,1),2),
+        //new PointLight(glm::vec3(5,0,0),   glm::vec3(1,0,0),2)
+    };
+    for (auto *light: pointLights) {
+        scene->add(light);
+    }
+
+    Mesh *mesh = new Mesh("../assets/table.obj", "../assets/table.png", glm::vec3(1,-1.3,-1.9), glm::vec3(1,1,1));
+    scene->add(mesh);
+
+    Mesh *mesh1 = new Mesh("../assets/computer.obj", "../assets/computer.png", glm::vec3(1,-0.2,-2.1), glm::vec3(1,1,1));
+    scene->add(mesh1);
+
+    Mesh *mesh3 = new Mesh("../assets/shelf.obj", "../assets/shelf.png", glm::vec3(-2,-2.9,0), glm::vec3(1,1,1));
+    scene->add(mesh3);
+
+    Mesh *mesh4 = new Mesh("../assets/crate.obj", "../assets/crate.png", glm::vec3(-2,-2.5,0.5), glm::vec3(1,1,1));
+    scene->add(mesh4);
+
+    Mesh *mesh5 = new Mesh("../assets/crate.obj", "../assets/crate.png", glm::vec3(-2,-2.5,-0.5), glm::vec3(1,1,1));
+    scene->add(mesh5);
+    Mesh *mesh6 = new Mesh("../assets/crate.obj", "../assets/crate.png", glm::vec3(-2,-1.3,0.5), glm::vec3(1,1,1));
+    scene->add(mesh6);
+    Mesh *mesh7 = new Mesh("../assets/crate.obj", "../assets/crate.png", glm::vec3(-2,-1.3,-0.5), glm::vec3(1,1,1));
+    scene->add(mesh7);
+    Mesh *mesh8 = new Mesh("../assets/crate.obj", "../assets/crate.png", glm::vec3(-2,-0.1,0.5), glm::vec3(1,1,1));
+    scene->add(mesh8);
+    Mesh *mesh9 = new Mesh("../assets/crate.obj", "../assets/crate.png", glm::vec3(-2,-0.1,-0.5), glm::vec3(1,1,1));
+    scene->add(mesh9);
+
+    Mesh *mesh10 = new Mesh("../assets/stool.obj", "../assets/stool.png", glm::vec3(1.5,-3,0), glm::vec3(1,1,1), glm::vec3(1), glm::vec3(0,45,0));
+    scene->add(mesh10);
+    mesh10->setRoughnessMap("../assets/stool_rough.png");
+    mesh10->setMetalnessMap("../assets/stool_rough.png");
+
+    //walls floor and ceiling
+    Mesh *mesh2 = new Mesh("../assets/floor.obj", "../assets/rustymetal3.png", glm::vec3(0,-3,0), glm::vec3(1,1,1));
+    scene->add(mesh2);
+    mesh2->setRoughnessMap("../assets/floor_rough.png");
+    mesh2->setMetalnessMap("../assets/floor_rough.png");
+
+    //walls floor and ceiling
+    Mesh *mesh_floor_2 = new Mesh("../assets/floor.obj", "../assets/rustymetal3.png", glm::vec3(0,-3,6), glm::vec3(1,1,1));
+    scene->add(mesh_floor_2);
+    mesh_floor_2->setRoughnessMap("../assets/floor_rough.png");
+    mesh_floor_2->setMetalnessMap("../assets/floor_rough.png");
+
+    Mesh *mesh_ceiling = new Mesh("../assets/floor.obj", "../assets/rustymetal3.png", glm::vec3(0,1.5,0), glm::vec3(1,1,1));
+    mesh_ceiling->rotateByDegrees({0,0,180});
+    scene->add(mesh_ceiling);
+    mesh_ceiling->setRoughnessMap("../assets/floor_rough.png");
+    mesh_ceiling->setMetalnessMap("../assets/floor_rough.png");
+
+    // Right wall (+X)
+    Mesh *mesh_wall_right = new Mesh("../assets/floor.obj", "../assets/rustymetal3.png", glm::vec3(3,-0.75,0), glm::vec3(.75,1,1));
+    mesh_wall_right->rotateByDegrees({0,0,90});
+    scene->add(mesh_wall_right);
+    mesh_wall_right->setRoughnessMap("../assets/floor_rough.png");
+    mesh_wall_right->setMetalnessMap("../assets/floor_rough.png");
+
+    // Left wall (-X)
+    Mesh *mesh_wall_left = new Mesh("../assets/floor.obj", "../assets/rustymetal3.png", glm::vec3(-3,-0.75,0), glm::vec3(.75,1,1));
+    mesh_wall_left->rotateByDegrees({0,0,-90});
+    scene->add(mesh_wall_left);
+    mesh_wall_left->setRoughnessMap("../assets/floor_rough.png");
+    mesh_wall_left->setMetalnessMap("../assets/floor_rough.png");
+
+    // Back wall (-Z)
+    Mesh *mesh_wall_back = new Mesh("../assets/floor.obj", "../assets/rustymetal3.png", glm::vec3(0,-0.75,-3), glm::vec3(1,1,.75));
+    mesh_wall_back->rotateByDegrees({90,0,0});
+    scene->add(mesh_wall_back);
+    mesh_wall_back->setRoughnessMap("../assets/floor_rough.png");
+    mesh_wall_back->setMetalnessMap("../assets/floor_rough.png");
+*/
+
+/*
+    
+    Mesh *doorFrameMesh = new Mesh("../assets/door_frame.obj", "../assets/door_frame.png", glm::vec3(0,-3,3), glm::vec3(1,1,1));
+    doorFrameMesh->rotateByDegrees({0,0,0});
+    scene->add(doorFrameMesh);
+    doorFrameMesh->setRoughnessMap("../assets/door_frame_rough.png");
+    */
+/*
+    Mesh *doorMesh = new Mesh("../assets/door.obj", "../assets/door.png", glm::vec3(0,-3,3), glm::vec3(1,1,1));
+    scene->add(doorMesh);
+    doorMesh->setRoughnessMap("../assets/door_rough.png");
+    */

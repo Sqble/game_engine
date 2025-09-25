@@ -1,0 +1,7 @@
+Conan 2 - pip install conan
+Cmake - installer online
+
+Msys2.org - to install mingw64
+MinGW 64bit: 
+pacman -S mingw-w64-ucrt-x86_64-gcc
+pacman -S mingw-w64-x86_64-make

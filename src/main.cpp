@@ -1,0 +1,295 @@
+/*
+-- conan install . --output-folder=build --build=missing
+*/
+
+#include <iostream>
+#include <string>
+#include <functional>
+#include <vector>
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "file_manager/file_manager.h"
+#include "shader/shader.h"
+#include "camera/camera.h"
+#include "cube/cube.h"
+#include "scene/scene.h"
+#include "scene/scene_manager.h"
+#include "plane/plane.h"
+#include "pointlight/pointlight.h"
+#include "mesh/mesh.h"
+#include "texture/texture.h"
+#include "raycast/raycast.h"
+#include "objmanager/objmanager.h"
+#include "engine_ui/engine_ui.h"
+
+#include "includes/imgui/imgui.h"
+#include "includes/imgui/imgui_impl_glfw.h"
+#include "includes/imgui/imgui_impl_opengl3.h"
+#include "includes/imgui/imgui_internal.h"
+
+//Game logic includes
+#include "game/submarine/submarine.h"
+
+void errorCallback(int error, const char *description) {
+    std::cerr << "GLFW Error: " << error << ": " << description << std::endl;
+}
+
+//Manage Inputs
+const float lookspeed = 1.5;
+static float movespeed = 1.5;
+const float movespeed_min = 0.1f;
+const float movespeed_max = 20.0f; 
+
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    if (yoffset > 0) {
+        movespeed *= 1.1f;
+    } else if (yoffset < 0) {
+        movespeed /= 1.1f;
+    }
+    if (movespeed < movespeed_min) movespeed = movespeed_min;
+    if (movespeed > movespeed_max) movespeed = movespeed_max;
+    //std::cout << "Move speed: " << movespeed << std::endl;
+}
+
+//input keys
+struct InputAction {
+    int key;
+    std::function<void()> action;
+};
+
+
+int main() {
+
+    // Initialize GLFW
+    if (!glfwInit()) {
+        std::cerr << "Failed to initialize GLFW" << std::endl;
+        return -1;
+    }
+
+    std::cout << "GLFW Successfully Initialized." << std::endl;
+
+    //set glfw error callback
+    glfwSetErrorCallback(errorCallback);
+
+    //set opengl version and profile
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); //opengl 4.1
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+    float time = (float)glfwGetTime();
+    float dt = 1;
+
+    //create window
+    GLFWwindow *window = glfwCreateWindow(1920, 1080, "Game", nullptr, nullptr);
+
+    //set scroll callback 
+    glfwSetScrollCallback(window, scrollCallback);
+    
+    if (!window) {
+        std::cerr << "Failed to create GLFW window" << std::endl;
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        return -1;
+    }
+
+    //make opengl context current
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(0);
+
+    // enable depth testing
+    glEnable(GL_DEPTH_TEST);
+    glfwWindowHint(GLFW_DEPTH_BITS, 24);
+
+    // Enable backface culling
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW); // Default for most OBJ files
+
+    //initialize GLEW
+    glewExperimental = GL_TRUE;
+    if (glewInit() != GLEW_OK) {
+        std::cerr << "failed to initialize GLEW" << std::endl;
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        return -1;
+    }
+
+    //imgui initializing
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); 
+    (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; 
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 410");
+
+    // Get screen dimensions
+    int screenWidth, screenHeight;
+    glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
+
+    // Initialize shader
+    Shader simpleShader;
+    simpleShader.init(
+    FileManager::read("../src/shaders/simple.vs"), // Vertex shader source
+    FileManager::read("../src/shaders/simple.fs")  // Fragment shader source
+    );
+
+    // Scene Setup
+    //std::cout << "loading scene now" << std::endl;
+    Scene* scene = SceneManager::createScene("scene", true);
+    scene->loadFromFile("scene.json", screenWidth, screenHeight);
+    ShowToast("Scene loaded!");
+    // Camera setup
+    Camera *camera = scene->getActiveCamera();
+    //Camera *camera = new Camera(screenWidth, screenHeight, {0.f,-0.5f,7.f}, {0.f,0.f,-1.f});
+    scene->add(camera);
+
+    // Scene Editing Mode Inits
+    bool sceneEditingMode = false;
+    bool lastKey1State = false;
+    bool lastKey2State = false;
+    bool lastKeySPressed = false;
+    SceneObject* selectedMesh = nullptr;
+
+    // Submarine Game Logic
+    Submarine submarine;
+
+    //Main Loop
+    while (!glfwWindowShouldClose(window)) {
+
+        //time elapsed since program launch
+        float last_time = time;
+        time = (float)glfwGetTime();
+        dt = time - last_time;
+
+        //background color
+        float red = 0;
+        float green = 0;
+        float blue = 0;
+
+        //clear color buffer
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(red, green, blue, 1.0);
+
+        //Set Input Actions
+        std::vector<InputAction> inputActions = {
+            {GLFW_KEY_I, [&scene, dt]() { scene->getActiveCamera()->rotateViewDirection({1.5f*dt*lookspeed,0}); }},
+            {GLFW_KEY_K, [&scene, dt]() { scene->getActiveCamera()->rotateViewDirection({-1.5f*dt*lookspeed,0}); }},
+            {GLFW_KEY_J, [&scene, dt]() { scene->getActiveCamera()->rotateViewDirection({0,1.5f*dt*lookspeed}); }},
+            {GLFW_KEY_L, [&scene, dt]() { scene->getActiveCamera()->rotateViewDirection({0,-1.5f*dt*lookspeed}); }},
+            {GLFW_KEY_W, [&scene, dt]() { scene->getActiveCamera()->move2D({2*dt*movespeed,0}); }},
+            {GLFW_KEY_S, [&scene, dt]() { scene->getActiveCamera()->move2D({-2*dt*movespeed,0}); }},
+            {GLFW_KEY_A, [&scene, dt]() { scene->getActiveCamera()->move2D({0,-2*dt*movespeed}); }},
+            {GLFW_KEY_D, [&scene, dt]() { scene->getActiveCamera()->move2D({0,2*dt*movespeed}); }},
+            // Add up/down movement
+            {GLFW_KEY_TAB, [&scene, dt]() { scene->getActiveCamera()->moveVertical(2*dt*movespeed); }}, // move up
+            {GLFW_KEY_LEFT_SHIFT, [&scene, dt]() { scene->getActiveCamera()->moveVertical(-2*dt*movespeed); }} // move down
+        };
+
+        //Manage Inputs
+        for (const auto& ia : inputActions) {
+            if (glfwGetKey(window, ia.key) == GLFW_PRESS) {
+                ia.action();
+            }
+        }
+
+        //Scene editing toggle 
+        bool altPressed = glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS;
+        bool key1Pressed = glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS;
+        if (altPressed && key1Pressed && !lastKey1State) {
+            sceneEditingMode = !sceneEditingMode;
+        }
+        lastKey1State = altPressed && key1Pressed;
+        bool key2Pressed = glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS;
+        if (altPressed && key2Pressed && !lastKey2State) {
+            if (scene->getActiveCamera() == camera) {
+                //scene->setActiveCamera(topDownCamera);
+            } else {
+                scene->setActiveCamera(camera);
+            }
+        }
+        lastKey2State = altPressed && key2Pressed;
+        //ctrl + s to save scene 
+        bool keySPressed = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS;
+
+        if (altPressed && keySPressed && !lastKeySPressed) {
+            scene->saveToFile(scene->getName() + ".json");
+            std::cout << "Scene saved to " << scene->getName() + ".json" << std::endl;
+        }
+        lastKeySPressed = altPressed && keySPressed;
+
+        // GAME LOOP
+
+        if (sceneEditingMode) {
+            if (ImGui::GetIO().WantCaptureMouse) {
+                // ImGui is handling the mouse input
+            } else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+                double mouseX, mouseY;
+                glfwGetCursorPos(window, &mouseX, &mouseY);
+
+                glm::vec3 rayDir = Raycast::getRayFromScreen((float)mouseX, (float)mouseY, screenWidth, screenHeight, camera);
+                glm::vec3 rayOrigin = camera->getPosition();
+
+                // Find closest mesh hit by ray
+                float closestDist = std::numeric_limits<float>::max();
+                SceneObject* hitMesh = nullptr;
+                for (auto mesh : scene->getMeshes()) { 
+                    float hitDist;
+                    if (mesh->intersectRay(rayOrigin, rayDir, hitDist)) { 
+                        if (hitDist < closestDist) {
+                            closestDist = hitDist;
+                            hitMesh = mesh;
+                        }
+                    }
+                }
+                if (hitMesh && hitMesh != selectedMesh) {
+                    selectedMesh = hitMesh;
+                    scene->getGizmo()->setPosition(selectedMesh->getPosition());
+                }
+            }
+        }
+
+        // Rendering
+        {
+            simpleShader.use();
+
+            SceneManager::getActiveScene()->draw(simpleShader);
+            
+            // Unbind the VAO
+            glBindVertexArray(0);
+        }
+
+        // UI Rendering
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        
+        ShowEngineUI(scene, screenWidth, screenHeight, selectedMesh, sceneEditingMode, camera);
+
+        // Render ImGui
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        //swap buffers and poll events
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+
+    }
+
+    // Cleanup ImGui
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    //cleanup GLFW
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return 0;
+
+}
