@@ -148,7 +148,7 @@ int main() {
     // Camera setup
     Camera *camera = scene->getActiveCamera();
     //Camera *camera = new Camera(screenWidth, screenHeight, {0.f,-0.5f,7.f}, {0.f,0.f,-1.f});
-    scene->add(camera);
+    //scene->add(camera);
 
     // Scene Editing Mode Inits
     bool sceneEditingMode = false;
@@ -158,7 +158,7 @@ int main() {
     SceneObject* selectedMesh = nullptr;
 
     // Submarine Game Logic
-    Submarine submarine;
+    Submarine submarine(scene);
 
     //Main Loop
     while (!glfwWindowShouldClose(window)) {
@@ -209,7 +209,7 @@ int main() {
         bool key2Pressed = glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS;
         if (altPressed && key2Pressed && !lastKey2State) {
             if (scene->getActiveCamera() == camera) {
-                //scene->setActiveCamera(topDownCamera);
+                scene->setActiveCamera(static_cast<Camera*>(scene->getFirstObjectWithTag("topdown_camera")));
             } else {
                 scene->setActiveCamera(camera);
             }
@@ -254,6 +254,8 @@ int main() {
                 }
             }
         }
+
+        submarine.update(dt);
 
         // Rendering
         {

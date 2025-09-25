@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <string>
 
 class SceneObject {
 public:
@@ -15,14 +16,14 @@ public:
 
     virtual void draw(class Shader& shader) = 0;
 
-    virtual void setPosition(const glm::vec3& position) { position_ = position; } //tested
-    glm::vec3 getPosition() const { return position_; } //tested
+    virtual void setPosition(const glm::vec3& position) { position_ = position; }
+    glm::vec3 getPosition() const { return position_; }
 
-    virtual void setSize(const glm::vec3& size) { size_ = size; } //tested
-    glm::vec3 getSize() const { return size_; } //tested
+    virtual void setSize(const glm::vec3& size) { size_ = size; }
+    glm::vec3 getSize() const { return size_; }
 
-    virtual void setColor(const glm::vec3& color) { color_ = color; } //tested
-    glm::vec3 getColor() const { return color_; } //tested
+    virtual void setColor(const glm::vec3& color) { color_ = color; }
+    glm::vec3 getColor() const { return color_; }
 
     virtual void setRotation(const glm::vec3& rotation) { rotation_ = rotation; }
     glm::vec3 getRotation() const { return rotation_; }
@@ -42,11 +43,15 @@ public:
         return false; // Default: no ray intersection support (only mesh can raycast)
     }
 
+    void setTag(const std::string& tag) { tag_ = tag; }
+    std::string getTag() const { return tag_; }
+
 protected:
     glm::vec3 position_;
     glm::vec3 size_;
     glm::vec3 color_;
     glm::vec3 rotation_;
     bool isActive_;
+    std::string tag_ = "";
 };
 

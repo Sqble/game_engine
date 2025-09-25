@@ -44,6 +44,10 @@ public:
     Mesh* getGizmo() const { return gizmo_; }
     void generateGizmo();
     void remove(SceneObject* object);
+    std::vector<SceneObject*> getObjectsWithTag(const std::string& tag) const;
+    SceneObject* getFirstObjectWithTag(const std::string& tag) const;
+
+    Camera* getFirstCameraWithTag(const std::string& tag) const;
 
 
 private:

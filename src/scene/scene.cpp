@@ -134,11 +134,10 @@ static json serializeObject(const SceneObject* obj) {
     j["color"] = { obj->getColor().r, obj->getColor().g, obj->getColor().b };
     j["rotation"] = { obj->getRotation().x, obj->getRotation().y, obj->getRotation().z };
     j["active"] = obj->isActive();
+    j["tag"] = obj->getTag();
 
-    // Mesh-specific: save texture paths if mesh
     if (obj->isMesh()) {
         const Mesh* mesh = static_cast<const Mesh*>(obj);
-        // You may need to add getters for these paths in Mesh if not present
         if (mesh->material.hasAlbedoMap())
             j["texture"] = mesh->material.getAlbedoPath();
         if (mesh->material.hasRoughnessMap())
@@ -147,7 +146,6 @@ static json serializeObject(const SceneObject* obj) {
             j["metalnessMap"] = mesh->material.getMetalPath();
         if (mesh->material.hasNormalMap())
             j["normalMap"] = mesh->material.getNormalPath();
-        // Save mesh file path if available (add a getter if needed)
         if (!mesh->objPath.empty())
             j["objPath"] = mesh->objPath;
     }
@@ -279,3 +277,31 @@ void Scene::remove(SceneObject* object) {
         if (activeCamera_ == cam) activeCamera_ = nullptr;
     }
 }*/
+
+std::vector<SceneObject*> Scene::getObjectsWithTag(const std::string& tag) const {
+        std::vector<SceneObject*> objects;
+        for (SceneObject* obj : objects_) {
+            if (obj->getTag() == tag) {
+                objects.push_back(obj);
+            }
+        }
+        return objects;
+}
+
+SceneObject* Scene::getFirstObjectWithTag(const std::string& tag) const {
+    for (SceneObject* obj : objects_) {
+        if (obj->getTag() == tag) {
+            return obj;
+        }
+    }
+    return nullptr;
+}
+
+Camera* Scene::getFirstCameraWithTag(const std::string& tag) const {
+    for (Camera* cam : cameras_) {
+        if (cam->getTag() == tag) {
+            return cam;
+        }
+    }
+    return nullptr;
+}

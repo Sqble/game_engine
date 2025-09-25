@@ -2,6 +2,7 @@
 #include <gl/glew.h>
 #include <glm/gtc/matrix_transform.hpp>
 
+//this class is deprecated, use Mesh with a cube obj instead
 Cube::Cube(const glm::vec3& position,
          const glm::vec3& size,
          const glm::vec3& color,

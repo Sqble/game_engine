@@ -3,6 +3,7 @@
 #include "../shader/shader.h"
 #include "../sceneobject/drawableobject.h"
 
+//this class is deprecated, use Mesh with a cube obj instead
 class Cube : public DrawableObject {
 public:
     Cube(const glm::vec3& position = glm::vec3(0.0f),

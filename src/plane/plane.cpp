@@ -2,6 +2,7 @@
 #include <gl/glew.h>
 #include <glm/gtc/matrix_transform.hpp>
 
+//this class is deprecated, use Mesh with a plane obj instead
 Plane::Plane(const glm::vec3& position, const glm::vec2& size, const glm::vec3& rotation, const glm::vec3& color, bool isActive)
 : DrawableObject(position, glm::vec3(1), color, rotation, isActive) {
 

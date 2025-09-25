@@ -1,10 +1,13 @@
 
 #include "submarine.h"
 
-Submarine::Submarine() : health(100.0f) {}
+Submarine::Submarine(Scene* scene) : health(100.0f) {
+    scene_ = scene;
+    light_ = static_cast<PointLight*>(scene->getFirstObjectWithTag("light1"));
+}
 
 void Submarine::update(float dt) {
-    // Update submarine logic here
+    
 }
 
 void Submarine::takeDamage(float amount) {
