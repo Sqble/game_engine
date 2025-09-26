@@ -59,7 +59,6 @@ static int screenWidth, screenHeight;
 void mouseMoveCallback(GLFWwindow* window, double xpos, double ypos) {
     if (!mouseCaptured) return;
     if (firstMouse) {
-        std::cout << "First mouse movement, initializing lastMouseX/Y" << std::endl;
         lastMouseX = xpos;
         lastMouseY = ypos;
         firstMouse = false;

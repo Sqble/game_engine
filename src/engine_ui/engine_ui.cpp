@@ -2,11 +2,13 @@
 #include "../objmanager/objmanager.h"
 #include "../mesh/mesh.h"
 #include "../pointlight/pointlight.h"
+#include "../undo/undo.h"
 
 #include "../includes/imgui/imgui.h"
 #include "../includes/imgui/imgui_impl_glfw.h"
 #include "../includes/imgui/imgui_impl_opengl3.h"
 #include "../includes/imgui/imgui_internal.h" 
+#include "../includes/json.hpp"
 
 #include <chrono>
 #include <string>
@@ -49,7 +51,31 @@ void RenderToast(int screenWidth) {
     ImGui::End();
 }
 
+static UndoManager undoManager;
+
 void ShowEngineUI(Scene* scene, int screenWidth, int screenHeight, SceneObject*& selectedMesh, bool& sceneEditingMode, Camera*& camera) {
+
+    // Handle Undo/Redo shortcuts (Ctrl+Z, Ctrl+Shift+Z)
+    ImGuiIO& io = ImGui::GetIO();
+    static bool lastUndoPressed = false;
+    static bool lastRedoPressed = false;
+    bool undoPressed = io.KeyCtrl && !io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_Z, false);
+    bool redoPressed = io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_Z, false);
+
+    if (undoPressed && !lastUndoPressed && undoManager.canUndo()) {
+        UndoManager::Action action = undoManager.popUndo();
+        // TODO: Apply undo action to scene (requires implementation)
+        ShowToast("Undo: " + std::to_string(action.type));
+    }
+    lastUndoPressed = undoPressed;
+
+    if (redoPressed && !lastRedoPressed && undoManager.canRedo()) {
+        UndoManager::Action action = undoManager.popRedo();
+        // TODO: Apply redo action to scene (requires implementation)
+        ShowToast("Redo: " + std::to_string(action.type));
+    }
+    lastRedoPressed = redoPressed;
+
     if (!sceneEditingMode) {
         return;
     }
@@ -152,60 +178,103 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                 lastMesh = selectedMesh;
             }
 
+            // --- Undo for Mesh ---
             if (selectedMesh->isMesh()) {
                 ImGui::Text("Selected Mesh Properties:");
-                bool posChanged = ImGui::InputFloat3("Position", &editPos.x, "%.3f");
-                bool scaleChanged = ImGui::InputFloat3("Scale", &editScale.x, "%.3f");
-                bool rotChanged = ImGui::InputFloat3("Rotation (deg)", &editRot.x, "%.3f");
-                bool colorChanged = ImGui::ColorEdit3("Color", &editColor.x);
-                bool activeChanged = ImGui::Checkbox("Active", &editActive);
-
                 Mesh* mesh = static_cast<Mesh*>(selectedMesh);
+                json beforeState, afterState;
+                int objId = mesh->getId() ? mesh->getId() : 0;
+                // Position
+                bool posChanged = ImGui::InputFloat3("Position", &editPos.x, "%.3f");
                 if (posChanged && editPos != mesh->getPosition()) {
+                    beforeState = serializeObject(mesh);
                     mesh->setPosition(editPos);
                     scene->getGizmo()->setPosition(editPos);
+                    afterState = serializeObject(mesh);
+                    undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
                 }
+                // Scale
+                bool scaleChanged = ImGui::InputFloat3("Scale", &editScale.x, "%.3f");
                 if (scaleChanged && editScale != mesh->getSize()) {
+                    beforeState = serializeObject(mesh);
                     mesh->setSize(editScale);
+                    afterState = serializeObject(mesh);
+                    undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
                 }
+                // Rotation
+                bool rotChanged = ImGui::InputFloat3("Rotation (deg)", &editRot.x, "%.3f");
                 if (rotChanged && editRot != mesh->getRotation()) {
+                    beforeState = serializeObject(mesh);
                     mesh->setRotation(editRot);
+                    afterState = serializeObject(mesh);
+                    undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
                 }
+                // Color
+                bool colorChanged = ImGui::ColorEdit3("Color", &editColor.x);
                 if (colorChanged && editColor != mesh->getColor()) {
+                    beforeState = serializeObject(mesh);
                     mesh->setColor(editColor);
+                    afterState = serializeObject(mesh);
+                    undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
                 }
+                // Active
+                bool activeChanged = ImGui::Checkbox("Active", &editActive);
                 if (activeChanged && editActive != mesh->isActive()) {
+                    beforeState = serializeObject(mesh);
                     mesh->setActive(editActive);
+                    afterState = serializeObject(mesh);
+                    undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
                 }
+            // --- Undo for PointLight ---
             } else if (selectedMesh->isPointLight()) {
                 ImGui::Text("Selected Light Properties:");
-                bool posChanged = ImGui::InputFloat3("Position", &editPos.x, "%.3f");
-                bool colorChanged = ImGui::ColorEdit3("Color", &editColor.x);
-                bool intensityChanged = ImGui::InputFloat("Intensity", &editIntensity, 0.01f, 0.1f, "%.2f");
-                bool activeChanged = ImGui::Checkbox("Active", &editActive);
-
                 PointLight* light = static_cast<PointLight*>(selectedMesh);
+                json beforeState, afterState;
+                int objId = light->getId() ? light->getId() : 0;
+                bool posChanged = ImGui::InputFloat3("Position", &editPos.x, "%.3f");
                 if (posChanged && editPos != light->getPosition()) {
+                    beforeState = serializeObject(light);
                     light->setPosition(editPos);
                     scene->getGizmo()->setPosition(editPos);
+                    afterState = serializeObject(light);
+                    undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
                 }
+                bool colorChanged = ImGui::ColorEdit3("Color", &editColor.x);
                 if (colorChanged && editColor != light->getColor()) {
+                    beforeState = serializeObject(light);
                     light->setColor(editColor);
+                    afterState = serializeObject(light);
+                    undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
                 }
-                if (intensityChanged && editIntensity != light->getIntensity()) { 
+                bool intensityChanged = ImGui::InputFloat("Intensity", &editIntensity, 0.01f, 0.1f, "%.2f");
+                if (intensityChanged && editIntensity != light->getIntensity()) {
+                    beforeState = serializeObject(light);
                     light->setIntensity(editIntensity);
+                    afterState = serializeObject(light);
+                    undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
                 }
+                bool activeChanged = ImGui::Checkbox("Active", &editActive);
                 if (activeChanged && editActive != light->isActive()) {
+                    beforeState = serializeObject(light);
                     light->setActive(editActive);
+                    afterState = serializeObject(light);
+                    undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
                 }
             }
 
+            // --- Undo for Delete ---
             if (ImGui::Button("Delete Object")) {
-                //scene->remove(selectedMesh);
-                //delete selectedMesh;
-                selectedMesh = nullptr;
-                lastMesh = nullptr;
+                if (selectedMesh) {
+                    json beforeState = serializeObject(selectedMesh);
+                    int objId = selectedMesh->getId() ? selectedMesh->getId() : 0;
+                    //scene->remove(selectedMesh);
+                    //delete selectedMesh;
+                    undoManager.pushAction({UndoManager::Action::Delete, beforeState, "", objId});
+                    selectedMesh = nullptr;
+                    lastMesh = nullptr;
+                }
             }
+            // --- Undo for Duplicate/Create ---
             if (ImGui::Button("Duplicate Object") && scene->getGizmo()) {
                 SceneObject* objToDuplicate = selectedMesh;
                 if (objToDuplicate->isMesh()) {
@@ -221,6 +290,8 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                     );
                     newMesh->setColor(mesh->getColor());
                     scene->add(newMesh);
+                    // Push create action
+                    undoManager.pushAction({UndoManager::Action::Create, "", serializeObject(newMesh), newMesh->getId() ? newMesh->getId() : 0});
                 } else if (objToDuplicate->isPointLight()) {
                     PointLight* light = static_cast<PointLight*>(objToDuplicate);
                     PointLight* newLight = new PointLight(
@@ -230,6 +301,7 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                         light->isActive()
                     );
                     scene->add(newLight);
+                    undoManager.pushAction({UndoManager::Action::Create, "", serializeObject(newLight), newLight->getId() ? newLight->getId() : 0});
                 }
             }
         } else {

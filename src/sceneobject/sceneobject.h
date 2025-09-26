@@ -25,7 +25,8 @@ public:
     virtual void setRotation(const glm::vec3& rotation) { rotation_ = rotation; }
     virtual void setActive(bool active) { isActive_ = active; }
     void setTag(const std::string& tag) { tag_ = tag; }
-
+    void setId(int id) { id_ = id; }
+    
     // Type identification
     virtual bool isDrawable() const { return false; }
     virtual bool isMesh() const { return false; }
@@ -48,6 +49,7 @@ public:
     glm::vec3 getRotation() const { return rotation_; }
     bool isActive() const { return isActive_; }
     std::string getTag() const { return tag_; }
+    int getId() const { return id_; }
 
     // Virtual children getter for tree UI
     virtual const std::vector<SceneObject*>& getChildren() const {
@@ -62,6 +64,7 @@ protected:
     glm::vec3 rotation_;
     bool isActive_;
     std::string tag_ = "";
+    int id_ = 0;
 };
 
 

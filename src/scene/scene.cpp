@@ -3,8 +3,6 @@
 #include <fstream>
 #include <glm/gtc/matrix_transform.hpp>
 
-using json = nlohmann::json;
-
 Scene::Scene(const std::string& name) : name_(name), activeCamera_(nullptr) {
     //std::cout << "scene constructor called" << std::endl;
     generateGizmo();
@@ -142,7 +140,7 @@ const std::vector<LightObject*>& Scene::getPointLights() const {
 }
 
 // Helper function to serialize a SceneObject
-static json serializeObject(const SceneObject* obj) {
+json serializeObject(const SceneObject* obj) {
     json j;
     j["type"] = obj->isCube() ? "cube" :
                 obj->isPlane() ? "plane" :
@@ -206,7 +204,7 @@ bool Scene::saveToFile(const std::string& filename) const {
 }
 
 // Helper function to deserialize a SceneObject (basic, extend as needed)
-static SceneObject* deserializeObject(const json& j, int screenWidth, int screenHeight) {
+SceneObject* deserializeObject(const json& j, int screenWidth, int screenHeight) {
     glm::vec3 position(j["position"][0], j["position"][1], j["position"][2]);
     glm::vec3 size(j["size"][0], j["size"][1], j["size"][2]);
     glm::vec3 color(j["color"][0], j["color"][1], j["color"][2]);

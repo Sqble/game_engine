@@ -13,6 +13,8 @@
 #include <string>
 #include "../includes/json.hpp"
 
+using json = nlohmann::json;
+
 const float ambientLight = 0.0f;
 
 class Scene {
@@ -65,3 +67,6 @@ private:
     std::vector<Camera*> cameras_;
     Mesh* gizmo_ = nullptr;
 };
+
+json serializeObject(const SceneObject* obj);
+SceneObject* deserializeObject(const json& j, int screenWidth, int screenHeight);
