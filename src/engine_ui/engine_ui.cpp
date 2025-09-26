@@ -65,14 +65,77 @@ void ShowEngineUI(Scene* scene, int screenWidth, int screenHeight, SceneObject*&
     if (undoPressed && !lastUndoPressed && undoManager.canUndo()) {
         UndoManager::Action action = undoManager.popUndo();
         // TODO: Apply undo action to scene (requires implementation)
-        ShowToast("Undo: " + std::to_string(action.type));
+        //ShowToast("Undo: " + std::to_string(action.type));
+        if (action.type == UndoManager::Action::Duplicate) { //to undo duplicate we remove the object
+            scene->remove(scene->getObjectWithId(action.objectId));
+            ShowToast("Removed duplicated object with ID: " + std::to_string(action.objectId));
+        }
+        if (action.type == UndoManager::Action::Create) { //to undo create we remove the object
+            scene->remove(scene->getObjectWithId(action.objectId));
+            ShowToast("Removed created object with ID: " + std::to_string(action.objectId));
+        }
+        if (action.type == UndoManager::Action::Delete) { //to undo delete we recreate the object
+            SceneObject* obj = deserializeObject(action.objectStateBefore, screenWidth, screenHeight);
+            if (obj) {
+                scene->add(obj);
+                ShowToast("Restored deleted object with ID: " + std::to_string(action.objectId));
+            }
+        }
+        if (action.type == UndoManager::Action::Transform) { //to undo transform we restore the previous state
+            SceneObject* obj = scene->getObjectWithId(action.objectId);
+            if (obj) {
+                SceneObject* newState = deserializeObject(action.objectStateBefore, screenWidth, screenHeight);
+                if (newState) {
+                    obj->setPosition(newState->getPosition());
+                    obj->setRotation(newState->getRotation());
+                    obj->setSize(newState->getSize());
+                    obj->setColor(newState->getColor());
+                    obj->setActive(newState->isActive());
+                    ShowToast("Reverted transform of object with ID: " + std::to_string(action.objectId));
+                    delete newState; //clean up
+                }
+            }
+        }
     }
     lastUndoPressed = undoPressed;
 
     if (redoPressed && !lastRedoPressed && undoManager.canRedo()) {
         UndoManager::Action action = undoManager.popRedo();
         // TODO: Apply redo action to scene (requires implementation)
-        ShowToast("Redo: " + std::to_string(action.type));
+        //ShowToast("Redo: " + std::to_string(action.type));
+        if (action.type == UndoManager::Action::Duplicate) { //to redo duplicate we recreate the object
+            SceneObject* obj = deserializeObject(action.objectStateAfter, screenWidth, screenHeight);
+            if (obj) {
+                scene->add(obj);
+                ShowToast("Re-duplicated object with ID: " + std::to_string(action.objectId));
+            }
+        }
+        if (action.type == UndoManager::Action::Create) { //to redo create we recreate the object
+            SceneObject* obj = deserializeObject(action.objectStateAfter, screenWidth, screenHeight);
+            if (obj) {
+                scene->add(obj);
+                ShowToast("Re-created object with ID: " + std::to_string(action.objectId));
+            }
+        }
+        if (action.type == UndoManager::Action::Delete) { //to redo delete we remove the object
+            scene->remove(scene->getObjectWithId(action.objectId));
+            ShowToast("Re-deleted object with ID: " + std::to_string(action.objectId));
+        }
+        if (action.type == UndoManager::Action::Transform) { //to redo transform we restore the new state
+            SceneObject* obj = scene->getObjectWithId(action.objectId);
+            if (obj) {
+                SceneObject* newState = deserializeObject(action.objectStateAfter, screenWidth, screenHeight);
+                if (newState) {
+                    obj->setPosition(newState->getPosition());
+                    obj->setRotation(newState->getRotation());
+                    obj->setSize(newState->getSize());
+                    obj->setColor(newState->getColor());
+                    obj->setActive(newState->isActive());
+                    ShowToast("Re-applied transform of object with ID: " + std::to_string(action.objectId));
+                    delete newState; //clean up
+                }
+            }
+        }
     }
     lastRedoPressed = redoPressed;
 
@@ -267,7 +330,7 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                 if (selectedMesh) {
                     json beforeState = serializeObject(selectedMesh);
                     int objId = selectedMesh->getId() ? selectedMesh->getId() : 0;
-                    //scene->remove(selectedMesh);
+                    scene->remove(selectedMesh);
                     //delete selectedMesh;
                     undoManager.pushAction({UndoManager::Action::Delete, beforeState, "", objId});
                     selectedMesh = nullptr;
@@ -362,6 +425,7 @@ static void ShowSceneViewWindow(Scene* scene, SceneObject*& selectedMesh, bool s
     int nodeIdx = 0;
     // Show all top-level meshes
     for (auto mesh : scene->getMeshes()) {
+        if (mesh->isChild_) continue; // Skip children, they will be shown under parents
         ShowSceneObjectTree(mesh, selectedMesh, scene, nodeIdx);
     }
     // Show all top-level lights

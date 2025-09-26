@@ -297,7 +297,6 @@ bool Scene::loadFromFile(const std::string& filename, int screenWidth, int scree
     return true;
 }
 
-/*
 void Scene::remove(SceneObject* object) {
     // Remove from objects_
     objects_.erase(std::remove(objects_.begin(), objects_.end(), object), objects_.end());
@@ -313,7 +312,7 @@ void Scene::remove(SceneObject* object) {
         // Optionally: handle activeCamera_ if needed
         if (activeCamera_ == cam) activeCamera_ = nullptr;
     }
-}*/
+}
 
 std::vector<SceneObject*> Scene::getObjectsWithTag(const std::string& tag) const {
         std::vector<SceneObject*> objects;
@@ -338,6 +337,15 @@ Camera* Scene::getFirstCameraWithTag(const std::string& tag) const {
     for (Camera* cam : cameras_) {
         if (cam->getTag() == tag) {
             return cam;
+        }
+    }
+    return nullptr;
+}
+
+SceneObject* Scene::getObjectWithId(int id) const {
+    for (SceneObject* obj : objects_) {
+        if (obj->getId() == id) {
+            return obj;
         }
     }
     return nullptr;

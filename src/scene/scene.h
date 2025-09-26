@@ -53,7 +53,7 @@ public:
     std::vector<SceneObject*> getObjectsWithTag(const std::string& tag) const;
     SceneObject* getFirstObjectWithTag(const std::string& tag) const;
     Camera* getFirstCameraWithTag(const std::string& tag) const;
-
+    SceneObject* getObjectWithId(int id) const;
 
     // Computes the light space matrix for the first active point light (for shadow mapping)
     glm::mat4 getLightSpaceMatrix() const;
