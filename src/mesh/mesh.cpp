@@ -158,26 +158,13 @@ void Mesh::draw(Shader& shader) {
     shader.setBool("useRoughnessMap", false);
     shader.setBool("useMetalnessMap", false);
 }
-/*
-void Mesh::setSize(const glm::vec3& size) {
-    // Compute scale factor based on the ratio of new size to current size
-    glm::vec3 scaleFactor;
-    scaleFactor.x = (size_.x != 0.0f) ? (size.x / size_.x) : 1.0f;
-    scaleFactor.y = (size_.y != 0.0f) ? (size.y / size_.y) : 1.0f;
-    scaleFactor.z = (size_.z != 0.0f) ? (size.z / size_.z) : 1.0f;
 
-    // Scale all vertices by the scale factor
-    for (auto& v : vertices) {
-        v.x *= scaleFactor.x;
-        v.y *= scaleFactor.y;
-        v.z *= scaleFactor.z;
-    }
-    size_ = size;
-
-    updateVboVertexData();
-    computeBoundingBox();
+void Mesh::shadowDraw(Shader& shader) {
+    if (!isActive_) return;
+    shader.setMat4("u_model", model_);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
-*/
 
 bool Mesh::intersectRay(const glm::vec3& rayOrigin, const glm::vec3& rayDir, float& hitDist) const {
     // Compute AABB in world space

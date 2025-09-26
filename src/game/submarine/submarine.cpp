@@ -18,6 +18,7 @@ void Submarine::update(float dt) {
         time = 0;
         if (light_) {
             light_->setActive(!light_->isActive());
+            //light_->setIntensity(light_->getIntensity() > 1.0f ? 0.75f : 1.25f);
         }
     }
 }

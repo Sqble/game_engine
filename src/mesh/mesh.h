@@ -19,6 +19,7 @@ public:
          const glm::vec3& rotation = glm::vec3(0.0f),
          bool isActive = true);
     void draw(Shader& shader) override;
+    void shadowDraw(Shader& shader);
     bool intersectRay(const glm::vec3& rayOrigin, const glm::vec3& rayDir, float& hitDist) const override;
     bool isMesh() const override { return true; }
 

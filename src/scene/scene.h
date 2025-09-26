@@ -13,7 +13,7 @@
 #include <string>
 #include "../includes/json.hpp"
 
-const float ambientLight = 0.1f;
+const float ambientLight = 0.0f;
 
 class Scene {
 public:
@@ -38,16 +38,23 @@ public:
 
     void setActiveCamera(Camera* camera);
     Camera* getActiveCamera() const;
+
     void draw(Shader &shader);
+    void drawShadowMap(Shader &shader);
+
     bool saveToFile(const std::string& filename) const;
     bool loadFromFile(const std::string& filename, int screenWidth, int screenHeight);
     Mesh* getGizmo() const { return gizmo_; }
     void generateGizmo();
     void remove(SceneObject* object);
+
     std::vector<SceneObject*> getObjectsWithTag(const std::string& tag) const;
     SceneObject* getFirstObjectWithTag(const std::string& tag) const;
-
     Camera* getFirstCameraWithTag(const std::string& tag) const;
+
+
+    // Computes the light space matrix for the first active point light (for shadow mapping)
+    glm::mat4 getLightSpaceMatrix() const;
 
 
 private:

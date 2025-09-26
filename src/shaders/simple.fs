@@ -33,6 +33,33 @@ uniform vec3 viewPos; //viewport position
 uniform int numLights; //number of lights in scene
 uniform vec3 globalAmbient; // Global ambient light color
 
+// Shadow mapping
+uniform sampler2D shadowMap;
+uniform mat4 lightSpaceMatrix;
+
+// Shadow calculation function
+float ShadowCalculation(vec3 fragPos)
+{
+    // Transform fragment position to light space
+    vec4 fragPosLightSpace = lightSpaceMatrix * vec4(fragPos, 1.0);
+    // Perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // Transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // Check if outside shadow map
+    if(projCoords.z > 1.0) return 0.0;
+    // Get closest depth from shadow map
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
+    float currentDepth = projCoords.z;
+    // Bias to prevent shadow acne
+    float bias = 0.0002;
+    // Simple shadow test
+    float shadow = currentDepth > closestDepth + bias ? 1.0 : 0.0;
+    //shadow = 1;
+    //FragColor = vec4(vec3(texture(shadowMap, projCoords.xy).r), 1.0);
+    return shadow;
+}
+
 struct PointLight {
     vec3 position;
     vec3 color;
@@ -64,8 +91,7 @@ float getMetalness() {
     }
 }
 
-void main()
-{
+void main() {
     vec3 norm = normalize(Normal);
 
     // Normal mapping
@@ -79,12 +105,15 @@ void main()
         normalMap = normalMap * 2.0 - 1.0; // Transform from [0,1] to [-1,1]
         norm = normalize(TBN * normalMap);
     }
-    
+
     float rough = clamp(getRoughness(), 0.05, 1.0); // avoid 0 roughness
     float metal = clamp(getMetalness(), 0.0, 1.0);
     vec3 albedo = getAlbedo();
 
     vec3 viewDir = normalize(viewPos - FragPos);
+
+    // Calculate shadow
+    float shadow = ShadowCalculation(FragPos);
 
     vec3 result = globalAmbient * albedo;
 
@@ -124,9 +153,9 @@ void main()
         diffuse *= attenuation;
         specular *= attenuation;
 
-        result += (ambient + diffuse) * albedo + specular;
+        // Apply shadow to diffuse and specular
+        result += ambient * albedo + (1.0 - shadow) * (diffuse * albedo + specular);
     }
-
     FragColor = vec4(result, useMeshTexture ? texture(u_texture, TexCoords).a : 1.0);
 
 }

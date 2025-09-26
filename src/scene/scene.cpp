@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "../frustum/frustum.h"
 #include <fstream>
+#include <glm/gtc/matrix_transform.hpp>
 
 using json = nlohmann::json;
 
@@ -35,6 +36,7 @@ void Scene::draw(Shader &shader) {
     shader.setMat4("u_projection", activeCamera_->getProjectionMatrix());
     shader.setVec3("viewPos", activeCamera_->getPosition());
     shader.setVec3("globalAmbient", glm::vec3());
+    shader.setMat4("lightSpaceMatrix", getLightSpaceMatrix());
 
     // Set up lights FIRST before drawing any objects
     int i = 0;
@@ -73,6 +75,24 @@ void Scene::draw(Shader &shader) {
     }
 
     //std::cout << "Culled " << objectsCulled << " objects this frame.\n";
+}
+
+void Scene::drawShadowMap(Shader &shader) {
+    // Set up light's view/projection matrices
+    shader.setMat4("lightSpaceMatrix", getLightSpaceMatrix());
+    //int drawn = 0;
+    // Only draw objects that cast shadows (meshes, cubes, planes)
+    for (SceneObject* object : objects_) {
+        if (!object->isActive() || !object->isDrawable()) continue;
+        // Only draw shadow-casting objects (skip lights, cameras, gizmo)
+        if (object->isMesh()) {
+            if (object == gizmo_) continue;
+            Mesh* mesh = static_cast<Mesh*>(object);
+            mesh->shadowDraw(shader);
+            //drawn++;
+        }
+    }
+    //std::cout << "Drawn " << drawn << " objects to shadow map.\n";
 }
 
 void Scene::add(SceneObject* obj) {
@@ -313,4 +333,29 @@ Camera* Scene::getFirstCameraWithTag(const std::string& tag) const {
         }
     }
     return nullptr;
+}
+
+glm::mat4 Scene::getLightSpaceMatrix() const {
+    // Use the first active point light
+    const auto& lights = getPointLights();
+    if (lights.empty()) {
+        // Fallback: return identity
+        return glm::mat4(1.0f);
+    }
+    const LightObject* light = lights[0];
+    glm::vec3 lightPos = light->getPosition();
+    glm::vec3 target = glm::vec3(0.0f, 0.0f, 1.0f); // Center of scene (could be improved)
+    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+    // For shadow mapping, use an orthographic projection (directional) or perspective (spot/point)
+    // We'll use orthographic for now for simplicity
+    float near_plane = 0.01f, far_plane = 12.0f;
+    float fov = glm::radians(90.0f); // 90 degree field of view
+    float aspect = 1.0f; // square shadow map
+    //std::cout << "[Shadow Debug] Light position: (" << lightPos.x << ", " << lightPos.y << ", " << lightPos.z << ")\n";
+    //std::cout << "[Shadow Debug] Perspective FOV: 90 deg, Near/Far: " << near_plane << ", " << far_plane << std::endl;
+
+    glm::mat4 lightProjection = glm::perspective(fov, aspect, near_plane, far_plane);
+    glm::mat4 lightView = glm::lookAt(lightPos, target, up);
+    return lightProjection * lightView;
 }

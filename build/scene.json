@@ -10,13 +10,13 @@
                 1.0
             ],
             "position": [
-                -0.013374283909797668,
-                -0.30309081077575684,
-                13.941900253295898
+                -0.029048703610897064,
+                -0.3011596202850342,
+                15.82679557800293
             ],
             "rotation": [
-                -6.37434196472168,
-                -31.404150009155273,
+                -6.342929363250732,
+                -6.295501708984375,
                 -1.0
             ],
             "size": [
@@ -24,6 +24,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "type": "camera"
         },
         {
@@ -48,11 +49,11 @@
                 1.0,
                 1.0
             ],
-            "type": "camera",
-            "tag": "topdown_camera"
+            "tag": "topdown_camera",
+            "type": "camera"
         },
         {
-            "active": true,
+            "active": false,
             "color": [
                 0.8899999856948853,
                 0.7689999938011169,
@@ -61,7 +62,7 @@
             "intensity": 2.0,
             "position": [
                 0.0,
-                1.0,
+                0.0,
                 0.0
             ],
             "rotation": [
@@ -74,8 +75,8 @@
                 1.0,
                 1.0
             ],
-            "type": "light",
-            "tag": "light1"
+            "tag": "light1",
+            "type": "light"
         },
         {
             "active": true,
@@ -100,6 +101,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/table.png",
             "type": "mesh"
         },
@@ -126,6 +128,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/computer.png",
             "type": "mesh"
         },
@@ -152,6 +155,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/shelf.png",
             "type": "mesh"
         },
@@ -178,6 +182,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/crate.png",
             "type": "mesh"
         },
@@ -204,6 +209,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/crate.png",
             "type": "mesh"
         },
@@ -230,6 +236,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/crate.png",
             "type": "mesh"
         },
@@ -256,6 +263,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/crate.png",
             "type": "mesh"
         },
@@ -282,6 +290,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/crate.png",
             "type": "mesh"
         },
@@ -310,6 +319,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/stool.png",
             "type": "mesh"
         },
@@ -339,6 +349,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -368,6 +379,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -397,6 +409,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -426,6 +439,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -455,6 +469,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -484,6 +499,7 @@
                 1.0,
                 0.75
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -512,6 +528,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/door_frame.png",
             "type": "mesh"
         },
@@ -538,6 +555,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/crate.png",
             "type": "mesh"
         },
@@ -567,6 +585,7 @@
                 6.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -596,6 +615,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -625,6 +645,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -654,6 +675,7 @@
                 1.0,
                 0.75
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -682,33 +704,9 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/bed/bed.png",
             "type": "mesh"
-        },
-        {
-            "active": true,
-            "color": [
-                0.8889999985694885,
-                0.7680000066757202,
-                0.5600000023841858
-            ],
-            "intensity": 1.0,
-            "position": [
-                0.0,
-                1.0,
-                6.0
-            ],
-            "rotation": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "size": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "type": "light"
         },
         {
             "active": true,
@@ -735,6 +733,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/ladder/ladder.png",
             "type": "mesh"
         },
@@ -764,6 +763,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -793,6 +793,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -822,6 +823,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -850,6 +852,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/door_frame.png",
             "type": "mesh"
         },
@@ -863,7 +866,7 @@
             "intensity": 1.0,
             "position": [
                 0.0,
-                1.0,
+                0.0,
                 12.0
             ],
             "rotation": [
@@ -876,6 +879,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "type": "light"
         },
         {
@@ -901,6 +905,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/shelf.png",
             "type": "mesh"
         },
@@ -927,6 +932,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/crate.png",
             "type": "mesh"
         },
@@ -953,6 +959,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/crate.png",
             "type": "mesh"
         },
@@ -979,6 +986,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/crate.png",
             "type": "mesh"
         },
@@ -1005,6 +1013,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/crate.png",
             "type": "mesh"
         },
@@ -1031,6 +1040,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/crate.png",
             "type": "mesh"
         },
@@ -1057,6 +1067,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/crate.png",
             "type": "mesh"
         },
@@ -1086,6 +1097,7 @@
                 6.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -1115,6 +1127,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -1144,6 +1157,7 @@
                 6.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -1173,6 +1187,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -1202,6 +1217,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/rustymetal3.png",
             "type": "mesh"
         },
@@ -1230,6 +1246,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/door_frame.png",
             "type": "mesh"
         },
@@ -1242,8 +1259,8 @@
             ],
             "intensity": 2.0,
             "position": [
-                1.0,
-                1.0,
+                0.0,
+                0.0,
                 18.0
             ],
             "rotation": [
@@ -1256,6 +1273,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "type": "light"
         },
         {
@@ -1281,6 +1299,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/locker/locker_closed.png",
             "type": "mesh"
         },
@@ -1307,6 +1326,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/hatch/hatch.png",
             "type": "mesh"
         },
@@ -1333,6 +1353,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/CeilingLight/ceiling_light.png",
             "type": "mesh"
         },
@@ -1359,6 +1380,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/CeilingLight/ceiling_light.png",
             "type": "mesh"
         },
@@ -1385,6 +1407,7 @@
                 1.0,
                 1.0
             ],
+            "tag": "",
             "texture": "../assets/CeilingLight/ceiling_light.png",
             "type": "mesh"
         }

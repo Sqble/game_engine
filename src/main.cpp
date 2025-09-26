@@ -85,7 +85,7 @@ int main() {
     float dt = 1;
 
     //create window
-    GLFWwindow *window = glfwCreateWindow(1920, 1080, "Game", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(1920*1.5, 1080*1.5, "Game", nullptr, nullptr);
 
     //set scroll callback 
     glfwSetScrollCallback(window, scrollCallback);
@@ -119,6 +119,37 @@ int main() {
         return -1;
     }
 
+    // Shadow map setup
+    const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
+    GLuint depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
+
+    // Create depth texture
+    GLuint depthMap;
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    // Framebuffer completeness check
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cerr << "ERROR: Shadow framebuffer is not complete!" << std::endl;
+    } else {
+        std::cout << "Shadow framebuffer is complete." << std::endl;
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
     //imgui initializing
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -138,6 +169,12 @@ int main() {
     simpleShader.init(
     FileManager::read("../src/shaders/simple.vs"), // Vertex shader source
     FileManager::read("../src/shaders/simple.fs")  // Fragment shader source
+    );
+
+    Shader shadowShader;
+    shadowShader.init(
+        FileManager::read("../src/shaders/shadow_depth.vs"),
+        FileManager::read("../src/shaders/shadow_depth.fs")
     );
 
     // Scene Setup
@@ -172,10 +209,6 @@ int main() {
         float red = 0;
         float green = 0;
         float blue = 0;
-
-        //clear color buffer
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(red, green, blue, 1.0);
 
         //Set Input Actions
         std::vector<InputAction> inputActions = {
@@ -259,9 +292,21 @@ int main() {
 
         // Rendering
         {
-            simpleShader.use();
+            glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+            glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+            glClear(GL_DEPTH_BUFFER_BIT);
+            shadowShader.use();
+            SceneManager::getActiveScene()->drawShadowMap(shadowShader);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+            glViewport(0, 0, screenWidth, screenHeight);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            simpleShader.use();
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, depthMap);
+            simpleShader.setInt("shadowMap", 4);
             SceneManager::getActiveScene()->draw(simpleShader);
+            
             
             // Unbind the VAO
             glBindVertexArray(0);
