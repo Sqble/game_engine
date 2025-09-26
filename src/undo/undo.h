@@ -19,6 +19,7 @@ public:
             Transform,
             Create,
             Delete,
+            Duplicate,
             MaterialChange
         } type;
 

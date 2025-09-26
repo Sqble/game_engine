@@ -274,7 +274,7 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                     lastMesh = nullptr;
                 }
             }
-            // --- Undo for Duplicate/Create ---
+            // --- Undo for Duplicate ---
             if (ImGui::Button("Duplicate Object") && scene->getGizmo()) {
                 SceneObject* objToDuplicate = selectedMesh;
                 if (objToDuplicate->isMesh()) {
@@ -291,7 +291,7 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                     newMesh->setColor(mesh->getColor());
                     scene->add(newMesh);
                     // Push create action
-                    undoManager.pushAction({UndoManager::Action::Create, "", serializeObject(newMesh), newMesh->getId() ? newMesh->getId() : 0});
+                    undoManager.pushAction({UndoManager::Action::Duplicate, "", serializeObject(newMesh), newMesh->getId() ? newMesh->getId() : 0});
                 } else if (objToDuplicate->isPointLight()) {
                     PointLight* light = static_cast<PointLight*>(objToDuplicate);
                     PointLight* newLight = new PointLight(
@@ -301,7 +301,7 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                         light->isActive()
                     );
                     scene->add(newLight);
-                    undoManager.pushAction({UndoManager::Action::Create, "", serializeObject(newLight), newLight->getId() ? newLight->getId() : 0});
+                    undoManager.pushAction({UndoManager::Action::Duplicate, "", serializeObject(newLight), newLight->getId() ? newLight->getId() : 0});
                 }
             }
         } else {
@@ -491,6 +491,11 @@ static void ShowAssetListWindow(Scene* scene) {
 
         if (newMesh)
             scene->add(newMesh);
+
+        // --- Undo for Create New ---
+        json afterState = serializeObject(newMesh);
+        int objId = newMesh->getId();
+        undoManager.pushAction({UndoManager::Action::Create, json(), afterState, objId});
     }
     ImGui::End();
 }

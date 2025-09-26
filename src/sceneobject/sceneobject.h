@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+static int sceneObjectIdCounter = 0;
 
 class SceneObject {
 public:
@@ -12,7 +13,7 @@ public:
                 const glm::vec3& rotation = glm::vec3(0.0f),
                 bool isActive = true)
         : position_(position), size_(size), color_(color),
-          rotation_(rotation), isActive_(isActive) {}
+          rotation_(rotation), isActive_(isActive), id_(assignNextId()) {}
 
     virtual ~SceneObject() = default;
 
@@ -36,6 +37,7 @@ public:
     virtual bool isLight() const { return false; }
     virtual bool isPointLight() const { return false; }
     virtual bool isParent() const { return false; }
+    virtual bool isChild() const { return isChild_; }
 
     // Ray intersection (for engine UI mesh selection, raycasting)
     virtual bool intersectRay(const glm::vec3& rayOrigin, const glm::vec3& rayDir, float& hitDist) const {
@@ -57,6 +59,10 @@ public:
         return empty;
     }
 
+    static int nextId() { return sceneObjectIdCounter + 1; }
+    static int assignNextId() { return sceneObjectIdCounter++; }
+    static void setIDCounter(int id) { sceneObjectIdCounter = id; }
+    bool isChild_ = false;
 protected:
     glm::vec3 position_;
     glm::vec3 size_;
@@ -65,6 +71,7 @@ protected:
     bool isActive_;
     std::string tag_ = "";
     int id_ = 0;
+    
 };
 
 
@@ -73,7 +80,11 @@ class ParentObject : public T {
 public:
     using T::T; // Inherit constructors
 
-    ParentObject(const std::vector<SceneObject*>& children) : children_(children) {}
+    ParentObject(const std::vector<SceneObject*>& children) : children_(children) {
+        for (SceneObject* child : children_) {
+            child->isChild_ = true;
+        }
+    }
 
     void setPosition(const glm::vec3& position) override {
         glm::vec3 delta = position - this->position_;
@@ -119,6 +130,7 @@ public:
     }
 
     void addChild(SceneObject* child) {
+        child->isChild_ = true;
         children_.push_back(child);
     }
 

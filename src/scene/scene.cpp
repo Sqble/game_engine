@@ -153,6 +153,7 @@ json serializeObject(const SceneObject* obj) {
     j["rotation"] = { obj->getRotation().x, obj->getRotation().y, obj->getRotation().z };
     j["active"] = obj->isActive();
     j["tag"] = obj->getTag();
+    j["id"] = obj->getId();
 
     if (obj->isMesh()) {
         const Mesh* mesh = static_cast<const Mesh*>(obj);
@@ -211,15 +212,21 @@ SceneObject* deserializeObject(const json& j, int screenWidth, int screenHeight)
     glm::vec3 rotation(j["rotation"][0], j["rotation"][1], j["rotation"][2]);
     bool active = j.value("active", true);
     std::string tag = j.value("tag", "");
+    int id = j.value("id", 0);
+    if (id > sceneObjectIdCounter) {
+        SceneObject::setIDCounter(id + 1);
+    }
 
     std::string type = j.value("type", "unknown");
     if (type == "cube") {
         Cube *r = new Cube(position, size, color, rotation, active);
         r->setTag(tag);
+        if (id != 0) r->setId(id);
         return r;
     } else if (type == "plane") {
         Plane *r = new Plane(position, size, color, rotation, active);
         r->setTag(tag);
+        if (id != 0) r->setId(id);
         return r;
     } else if (type == "mesh") {
         std::string objPath = j.value("objPath", "");
@@ -235,15 +242,18 @@ SceneObject* deserializeObject(const json& j, int screenWidth, int screenHeight)
         */
         Mesh* mesh = new Mesh(objPath, mat, position, size, color, rotation, active);
         mesh->setTag(tag);
+        if (id != 0) mesh->setId(id);
         return mesh;
     } else if (type == "camera") {
         Camera* cam = new Camera(screenWidth, screenHeight, position, rotation);
         cam->setTag(tag);
+        if (id != 0) cam->setId(id);
         return cam;
     } else if (type == "light") {
         int intensity = j.value("intensity", 1.0f);
         PointLight* light = new PointLight(position, color, intensity, active);
         light->setTag(tag);
+        if (id != 0) light->setId(id);
         return light;
     }
     return nullptr;

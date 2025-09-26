@@ -9,13 +9,16 @@
                 1.0,
                 1.0
             ],
+            "id": 10,
             "position": [
-                -0.029048703610897064,
+                -0.03121248260140419,
                 -0.3011596202850342,
-                15.82679557800293
+                15.85230541229248
             ],
             "rotation": [
-                0,0,0
+                -0.20549434423446655,
+                0.08461976051330566,
+                0.0
             ],
             "size": [
                 1.0,
@@ -32,6 +35,7 @@
                 1.0,
                 1.0
             ],
+            "id": 2,
             "position": [
                 0.0,
                 10.0,
@@ -51,12 +55,13 @@
             "type": "camera"
         },
         {
-            "active": false,
+            "active": true,
             "color": [
                 0.8899999856948853,
                 0.7689999938011169,
                 0.5600000023841858
             ],
+            "id": 3,
             "intensity": 2.0,
             "position": [
                 0.0,
@@ -83,6 +88,7 @@
                 1.0,
                 1.0
             ],
+            "id": 4,
             "objPath": "../assets/table.obj",
             "position": [
                 1.0,
@@ -110,6 +116,7 @@
                 1.0,
                 1.0
             ],
+            "id": 5,
             "objPath": "../assets/computer.obj",
             "position": [
                 1.0,
@@ -137,6 +144,7 @@
                 1.0,
                 1.0
             ],
+            "id": 6,
             "objPath": "../assets/shelf.obj",
             "position": [
                 2.0,
@@ -164,6 +172,7 @@
                 1.0,
                 1.0
             ],
+            "id": 7,
             "objPath": "../assets/crate.obj",
             "position": [
                 2.0,
@@ -191,6 +200,7 @@
                 1.0,
                 1.0
             ],
+            "id": 8,
             "objPath": "../assets/crate.obj",
             "position": [
                 2.0,
@@ -218,6 +228,7 @@
                 1.0,
                 1.0
             ],
+            "id": 9,
             "objPath": "../assets/crate.obj",
             "position": [
                 2.0,
@@ -245,6 +256,7 @@
                 1.0,
                 1.0
             ],
+            "id": 10,
             "objPath": "../assets/crate.obj",
             "position": [
                 2.0,
@@ -272,6 +284,7 @@
                 1.0,
                 1.0
             ],
+            "id": 11,
             "objPath": "../assets/crate.obj",
             "position": [
                 2.0,
@@ -299,6 +312,7 @@
                 1.0,
                 1.0
             ],
+            "id": 12,
             "metalnessMap": "../assets/stool_rough.png",
             "objPath": "../assets/stool.obj",
             "position": [
@@ -328,6 +342,7 @@
                 1.0,
                 1.0
             ],
+            "id": 13,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -358,6 +373,7 @@
                 1.0,
                 1.0
             ],
+            "id": 14,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -388,6 +404,7 @@
                 1.0,
                 1.0
             ],
+            "id": 15,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -418,6 +435,7 @@
                 1.0,
                 1.0
             ],
+            "id": 16,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -448,6 +466,7 @@
                 1.0,
                 1.0
             ],
+            "id": 17,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -478,6 +497,7 @@
                 1.0,
                 1.0
             ],
+            "id": 18,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -508,6 +528,7 @@
                 1.0,
                 1.0
             ],
+            "id": 19,
             "normalMap": "../assets/door_frame_rough.png",
             "objPath": "../assets/door_frame.obj",
             "position": [
@@ -537,6 +558,7 @@
                 1.0,
                 1.0
             ],
+            "id": 20,
             "objPath": "../assets/crate.obj",
             "position": [
                 2.0,
@@ -564,6 +586,7 @@
                 1.0,
                 1.0
             ],
+            "id": 21,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -594,6 +617,7 @@
                 1.0,
                 1.0
             ],
+            "id": 22,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -624,6 +648,7 @@
                 1.0,
                 1.0
             ],
+            "id": 23,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -654,6 +679,7 @@
                 1.0,
                 1.0
             ],
+            "id": 24,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -684,6 +710,7 @@
                 1.0,
                 1.0
             ],
+            "id": 25,
             "normalMap": "../assets/bed/bed_normal.png",
             "objPath": "../assets/bed/bed.obj",
             "position": [
@@ -713,6 +740,7 @@
                 1.0,
                 1.0
             ],
+            "id": 26,
             "metalnessMap": "../assets/ladder/ladder_metal.png",
             "objPath": "../assets/ladder/ladder.obj",
             "position": [
@@ -742,6 +770,7 @@
                 1.0,
                 1.0
             ],
+            "id": 27,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -772,6 +801,7 @@
                 1.0,
                 1.0
             ],
+            "id": 28,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -802,6 +832,7 @@
                 1.0,
                 1.0
             ],
+            "id": 29,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -832,6 +863,7 @@
                 1.0,
                 1.0
             ],
+            "id": 30,
             "normalMap": "../assets/door_frame_rough.png",
             "objPath": "../assets/door_frame.obj",
             "position": [
@@ -861,6 +893,7 @@
                 0.7680000066757202,
                 0.5600000023841858
             ],
+            "id": 31,
             "intensity": 1.0,
             "position": [
                 0.0,
@@ -887,6 +920,7 @@
                 1.0,
                 1.0
             ],
+            "id": 32,
             "objPath": "../assets/shelf.obj",
             "position": [
                 2.0,
@@ -914,6 +948,7 @@
                 1.0,
                 1.0
             ],
+            "id": 33,
             "objPath": "../assets/crate.obj",
             "position": [
                 2.0,
@@ -941,6 +976,7 @@
                 1.0,
                 1.0
             ],
+            "id": 34,
             "objPath": "../assets/crate.obj",
             "position": [
                 2.0,
@@ -968,6 +1004,7 @@
                 1.0,
                 1.0
             ],
+            "id": 35,
             "objPath": "../assets/crate.obj",
             "position": [
                 2.0,
@@ -995,6 +1032,7 @@
                 1.0,
                 1.0
             ],
+            "id": 36,
             "objPath": "../assets/crate.obj",
             "position": [
                 2.0,
@@ -1022,6 +1060,7 @@
                 1.0,
                 1.0
             ],
+            "id": 37,
             "objPath": "../assets/crate.obj",
             "position": [
                 2.0,
@@ -1049,6 +1088,7 @@
                 1.0,
                 1.0
             ],
+            "id": 38,
             "objPath": "../assets/crate.obj",
             "position": [
                 2.0,
@@ -1076,6 +1116,7 @@
                 1.0,
                 1.0
             ],
+            "id": 39,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -1106,6 +1147,7 @@
                 1.0,
                 1.0
             ],
+            "id": 40,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -1136,6 +1178,7 @@
                 1.0,
                 1.0
             ],
+            "id": 41,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -1166,6 +1209,7 @@
                 1.0,
                 1.0
             ],
+            "id": 42,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -1196,6 +1240,7 @@
                 1.0,
                 1.0
             ],
+            "id": 43,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
@@ -1226,6 +1271,7 @@
                 1.0,
                 1.0
             ],
+            "id": 44,
             "normalMap": "../assets/door_frame_rough.png",
             "objPath": "../assets/door_frame.obj",
             "position": [
@@ -1255,6 +1301,7 @@
                 0.7680000066757202,
                 0.5600000023841858
             ],
+            "id": 45,
             "intensity": 2.0,
             "position": [
                 0.0,
@@ -1281,6 +1328,7 @@
                 1.0,
                 1.0
             ],
+            "id": 46,
             "objPath": "../assets/locker/locker_closed.obj",
             "position": [
                 -2.0,
@@ -1308,6 +1356,7 @@
                 1.0,
                 1.0
             ],
+            "id": 47,
             "objPath": "../assets/hatch/hatch.obj",
             "position": [
                 0.0,
@@ -1335,6 +1384,7 @@
                 1.0,
                 1.0
             ],
+            "id": 48,
             "objPath": "../assets/CeilingLight/ceiling_light.obj",
             "position": [
                 0.0,
@@ -1362,6 +1412,7 @@
                 1.0,
                 1.0
             ],
+            "id": 49,
             "objPath": "../assets/CeilingLight/ceiling_light.obj",
             "position": [
                 0.0,
@@ -1389,6 +1440,7 @@
                 1.0,
                 1.0
             ],
+            "id": 50,
             "objPath": "../assets/CeilingLight/ceiling_light.obj",
             "position": [
                 0.0,

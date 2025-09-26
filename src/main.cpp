@@ -226,11 +226,13 @@ int main() {
     //Camera *camera = new Camera(screenWidth, screenHeight, {0.f,-0.5f,7.f}, {0.f,0.f,-1.f});
     //scene->add(camera);
 
+    /*
     ParentObject<PointLight>* parentLight = new ParentObject<PointLight>(glm::vec3(0,5,0), glm::vec3(1,0,0), 1.0f, true);
     Mesh *childMesh = new Mesh("../assets/CeilingLight/ceiling_light.obj", Material("../assets/CeilingLight/ceiling_light.png"), glm::vec3(0,5,0), glm::vec3(0.5f,0.5f,0.5f));
     scene->add(childMesh);
     parentLight->addChild(childMesh);
     scene->add(parentLight);
+    */
 
     // Scene Editing Mode Inits
     bool sceneEditingMode = false;
