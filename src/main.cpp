@@ -38,20 +38,58 @@ void errorCallback(int error, const char *description) {
     std::cerr << "GLFW Error: " << error << ": " << description << std::endl;
 }
 
+
 //Manage Inputs
-const float lookspeed = 1.5;
-static float movespeed = 1.5;
+const float lookspeed = 1.5f;
+static float baseMoveSpeed = 1.5f; // set by scroll wheel
+static float movespeed = 1.5f;     // actual used for movement (may be sprinted)
 const float movespeed_min = 0.1f;
-const float movespeed_max = 20.0f; 
+const float movespeed_max = 20.0f;
+const float sprintMultiplier = 1.75f;
+
+// Mouse look state
+static double lastMouseX = 0.0, lastMouseY = 0.0;
+static bool firstMouse = true;
+static bool mouseCaptured = false;
+
+static float dt = 1.0f;
+
+static int screenWidth, screenHeight;
+
+void mouseMoveCallback(GLFWwindow* window, double xpos, double ypos) {
+    if (!mouseCaptured) return;
+    if (firstMouse) {
+        std::cout << "First mouse movement, initializing lastMouseX/Y" << std::endl;
+        lastMouseX = xpos;
+        lastMouseY = ypos;
+        firstMouse = false;
+        return;
+    }
+    //std::cout << "Mouse moved to: " << xpos << ", " << ypos << " last: " << lastMouseX << ", " << lastMouseY << std::endl;
+    double xoffset = xpos - lastMouseX;
+    double yoffset = lastMouseY - ypos;
+    lastMouseX = xpos;
+    lastMouseY = ypos;
+
+    // Get camera and rotate
+    Scene* scene = SceneManager::getActiveScene();
+    if (scene) {
+        Camera* cam = scene->getActiveCamera();
+        if (cam) {
+            float sensitivity = 1.0f * lookspeed * dt;
+            cam->rotateViewDirection({ (float)yoffset * sensitivity, -(float)xoffset * sensitivity });
+        }
+    }
+}
 
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     if (yoffset > 0) {
-        movespeed *= 1.1f;
+        baseMoveSpeed *= 1.1f;
     } else if (yoffset < 0) {
-        movespeed /= 1.1f;
+        baseMoveSpeed /= 1.1f;
     }
-    if (movespeed < movespeed_min) movespeed = movespeed_min;
-    if (movespeed > movespeed_max) movespeed = movespeed_max;
+    if (baseMoveSpeed < movespeed_min) baseMoveSpeed = movespeed_min;
+    if (baseMoveSpeed > movespeed_max) baseMoveSpeed = movespeed_max;
     //std::cout << "Move speed: " << movespeed << std::endl;
 }
 
@@ -60,6 +98,7 @@ struct InputAction {
     int key;
     std::function<void()> action;
 };
+
 
 
 int main() {
@@ -82,13 +121,14 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     float time = (float)glfwGetTime();
-    float dt = 1;
 
     //create window
     GLFWwindow *window = glfwCreateWindow(1920*1.5, 1080*1.5, "Game", nullptr, nullptr);
 
     //set scroll callback 
     glfwSetScrollCallback(window, scrollCallback);
+    // set mouse move callback
+    glfwSetCursorPosCallback(window, mouseMoveCallback);
     
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
@@ -161,7 +201,7 @@ int main() {
     ImGui_ImplOpenGL3_Init("#version 410");
 
     // Get screen dimensions
-    int screenWidth, screenHeight;
+    
     glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
 
     // Initialize shader
@@ -187,6 +227,12 @@ int main() {
     //Camera *camera = new Camera(screenWidth, screenHeight, {0.f,-0.5f,7.f}, {0.f,0.f,-1.f});
     //scene->add(camera);
 
+    ParentObject<PointLight>* parentLight = new ParentObject<PointLight>(glm::vec3(0,5,0), glm::vec3(1,0,0), 1.0f, true);
+    Mesh *childMesh = new Mesh("../assets/CeilingLight/ceiling_light.obj", Material("../assets/CeilingLight/ceiling_light.png"), glm::vec3(0,5,0), glm::vec3(0.5f,0.5f,0.5f));
+    scene->add(childMesh);
+    parentLight->addChild(childMesh);
+    scene->add(parentLight);
+
     // Scene Editing Mode Inits
     bool sceneEditingMode = false;
     bool lastKey1State = false;
@@ -194,11 +240,24 @@ int main() {
     bool lastKeySPressed = false;
     SceneObject* selectedMesh = nullptr;
 
+    // Center mouse before changing capture modes
+    mouseCaptured = true;   
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     // Submarine Game Logic
     Submarine submarine(scene);
 
     //Main Loop
+
     while (!glfwWindowShouldClose(window)) {
+
+        // Sprint logic: hold Shift to sprint (multiplies baseMoveSpeed)
+        bool shiftPressed = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+        if (shiftPressed) {
+            movespeed = baseMoveSpeed * sprintMultiplier;
+        } else {
+            movespeed = baseMoveSpeed;
+        }
 
         //time elapsed since program launch
         float last_time = time;
@@ -212,17 +271,17 @@ int main() {
 
         //Set Input Actions
         std::vector<InputAction> inputActions = {
-            {GLFW_KEY_I, [&scene, dt]() { scene->getActiveCamera()->rotateViewDirection({1.5f*dt*lookspeed,0}); }},
-            {GLFW_KEY_K, [&scene, dt]() { scene->getActiveCamera()->rotateViewDirection({-1.5f*dt*lookspeed,0}); }},
-            {GLFW_KEY_J, [&scene, dt]() { scene->getActiveCamera()->rotateViewDirection({0,1.5f*dt*lookspeed}); }},
-            {GLFW_KEY_L, [&scene, dt]() { scene->getActiveCamera()->rotateViewDirection({0,-1.5f*dt*lookspeed}); }},
-            {GLFW_KEY_W, [&scene, dt]() { scene->getActiveCamera()->move2D({2*dt*movespeed,0}); }},
-            {GLFW_KEY_S, [&scene, dt]() { scene->getActiveCamera()->move2D({-2*dt*movespeed,0}); }},
-            {GLFW_KEY_A, [&scene, dt]() { scene->getActiveCamera()->move2D({0,-2*dt*movespeed}); }},
-            {GLFW_KEY_D, [&scene, dt]() { scene->getActiveCamera()->move2D({0,2*dt*movespeed}); }},
-            // Add up/down movement
-            {GLFW_KEY_TAB, [&scene, dt]() { scene->getActiveCamera()->moveVertical(2*dt*movespeed); }}, // move up
-            {GLFW_KEY_LEFT_SHIFT, [&scene, dt]() { scene->getActiveCamera()->moveVertical(-2*dt*movespeed); }} // move down
+            {GLFW_KEY_I, [&scene]() { scene->getActiveCamera()->rotateViewDirection({1.5f*dt*lookspeed,0}); }},
+            {GLFW_KEY_K, [&scene]() { scene->getActiveCamera()->rotateViewDirection({-1.5f*dt*lookspeed,0}); }},
+            {GLFW_KEY_J, [&scene]() { scene->getActiveCamera()->rotateViewDirection({0,1.5f*dt*lookspeed}); }},
+            {GLFW_KEY_L, [&scene]() { scene->getActiveCamera()->rotateViewDirection({0,-1.5f*dt*lookspeed}); }},
+            {GLFW_KEY_W, [&scene]() { scene->getActiveCamera()->move2D({2*dt*movespeed,0}); }},
+            {GLFW_KEY_S, [&scene]() { scene->getActiveCamera()->move2D({-2*dt*movespeed,0}); }},
+            {GLFW_KEY_A, [&scene]() { scene->getActiveCamera()->move2D({0,-2*dt*movespeed}); }},
+            {GLFW_KEY_D, [&scene]() { scene->getActiveCamera()->move2D({0,2*dt*movespeed}); }},
+            // Up/down movement: O = up, U = down
+            {GLFW_KEY_O, [&scene]() { scene->getActiveCamera()->moveVertical(2*dt*movespeed); }}, // move up
+            {GLFW_KEY_U, [&scene]() { scene->getActiveCamera()->moveVertical(-2*dt*movespeed); }} // move down
         };
 
         //Manage Inputs
@@ -231,6 +290,7 @@ int main() {
                 ia.action();
             }
         }
+
 
         //Scene editing toggle 
         bool altPressed = glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS;
@@ -248,7 +308,7 @@ int main() {
             }
         }
         lastKey2State = altPressed && key2Pressed;
-        //ctrl + s to save scene 
+        //alt + s to save scene 
         bool keySPressed = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS;
 
         if (altPressed && keySPressed && !lastKeySPressed) {
@@ -257,8 +317,20 @@ int main() {
         }
         lastKeySPressed = altPressed && keySPressed;
 
-        // GAME LOOP
+        // Mouse capture/release logic
+        bool wantCaptureMouse = ImGui::GetIO().WantCaptureMouse;
+        if (!sceneEditingMode && !wantCaptureMouse && !mouseCaptured) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            mouseCaptured = true;
+            firstMouse = true;
+        } else if ((sceneEditingMode || wantCaptureMouse) && mouseCaptured) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            mouseCaptured = false;
+            firstMouse = true;
+        }
 
+
+        // GAME LOOP
         if (sceneEditingMode) {
             if (ImGui::GetIO().WantCaptureMouse) {
                 // ImGui is handling the mouse input

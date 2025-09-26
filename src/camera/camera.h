@@ -61,6 +61,10 @@ class Camera : public SceneObject {
             rotation_.y -= rotationDelta.y;
             // Pitch (around X axis)
             rotation_.x += rotationDelta.x;
+            // Clamp pitch to avoid flipping
+            const float pitchLimit = (float)M_PI_2 - 0.01f; // ~89.4 degrees
+            if (rotation_.x > pitchLimit) rotation_.x = pitchLimit;
+            if (rotation_.x < -pitchLimit) rotation_.x = -pitchLimit;
             recalculateMatrix();
         }
 

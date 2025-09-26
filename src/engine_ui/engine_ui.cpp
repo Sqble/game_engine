@@ -240,37 +240,61 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
 }
 
 // --- Scene View Window ---
+
+// Helper: recursively display a SceneObject and its children as a tree
+static void ShowSceneObjectTree(SceneObject* obj, SceneObject*& selectedMesh, Scene* scene, int& nodeIdx) {
+    glm::vec3 pos = obj->getPosition();
+    std::string displayName;
+    std::string tag = obj->getTag();
+    if (!tag.empty()) {
+        displayName = tag;
+    } else {
+        displayName = obj->isMesh() ? "Mesh" : obj->isPointLight() ? "Light" : obj->isParent() ? "Parent" : "Object";
+    }
+    char label[128];
+    snprintf(label, sizeof(label), "[%s] (%.2f, %.2f, %.2f)##node%d", displayName.c_str(), pos.x, pos.y, pos.z, nodeIdx++);
+
+    bool isSelected = (obj == selectedMesh);
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+    if (isSelected) flags |= ImGuiTreeNodeFlags_Selected;
+
+    bool isParent = obj->isParent();
+    bool open = false;
+    if (isParent) {
+        open = ImGui::TreeNodeEx(label, flags);
+    } else {
+        ImGui::TreeNodeEx(label, flags | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+    }
+    if (ImGui::IsItemClicked()) {
+        selectedMesh = obj;
+        scene->getGizmo()->setPosition(selectedMesh->getPosition());
+    }
+    if (isParent && open) {
+        // Recursively show children
+        const auto* parentObj = obj;
+        // Only call getChildren if isParent is true
+        if (parentObj->isParent()) {
+            const auto& children = static_cast<const ParentObject<SceneObject>*>(parentObj)->getChildren();
+            for (auto* child : children) {
+                ShowSceneObjectTree(child, selectedMesh, scene, nodeIdx);
+            }
+        }
+        ImGui::TreePop();
+    }
+}
+
 static void ShowSceneViewWindow(Scene* scene, SceneObject*& selectedMesh, bool sceneEditingMode) {
     if (!sceneEditingMode) return;
     ImGui::Begin("Scene View");
-    ImGui::Text("Objects in Scene:");
-    int meshIdx = 0;
+    ImGui::Text("Objects in Scene (Tree):");
+    int nodeIdx = 0;
+    // Show all top-level meshes
     for (auto mesh : scene->getMeshes()) {
-        glm::vec3 pos = mesh->getPosition();
-        std::string typeName = "Mesh";
-        if (mesh == scene->getGizmo()) typeName = "Gizmo";
-        // Create a selectable label for each mesh
-        char label[128];
-        snprintf(label, sizeof(label), "[%s] (%.2f, %.2f, %.2f)##%d", typeName.c_str(), pos.x, pos.y, pos.z, meshIdx);
-        bool isSelected = (mesh == selectedMesh);
-        if (ImGui::Selectable(label, isSelected)) {
-            selectedMesh = mesh;
-            scene->getGizmo()->setPosition(selectedMesh->getPosition());
-        }
-        meshIdx++;
+        ShowSceneObjectTree(mesh, selectedMesh, scene, nodeIdx);
     }
-    int lightIdx = 0;
+    // Show all top-level lights
     for (auto light : scene->getPointLights()) {
-        glm::vec3 pos = light->getPosition();
-        std::string typeName = "Light";
-        char label[128];
-        snprintf(label, sizeof(label), "[%s] (%.2f, %.2f, %.2f)##light%d", typeName.c_str(), pos.x, pos.y, pos.z, lightIdx);
-        bool isSelected = (light == selectedMesh);
-        if (ImGui::Selectable(label, isSelected)) {
-            selectedMesh = light;
-            scene->getGizmo()->setPosition(selectedMesh->getPosition());
-        }
-        lightIdx++;
+        ShowSceneObjectTree(light, selectedMesh, scene, nodeIdx);
     }
     ImGui::End();
 }
