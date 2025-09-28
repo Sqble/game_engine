@@ -330,11 +330,29 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                 if (selectedMesh) {
                     json beforeState = serializeObject(selectedMesh);
                     int objId = selectedMesh->getId() ? selectedMesh->getId() : 0;
+
+                    int parentId = selectedMesh->getParentId();
+                    // remove child from parents
+                    if (parentId != -1) {
+                        SceneObject* parentObject = scene->getObjectWithId(parentId);
+                        parentObject->removeChild(selectedMesh);
+                    }
+                    // If the selected mesh is a parent, its children should no longer be children
+                    if (selectedMesh->isParent()) {
+                        auto children = static_cast<ParentObject<SceneObject>*>(selectedMesh)->getChildren();
+                        for (auto* child : children) {
+                            child->setParentId(-1);
+                            child->isChild_ = false;
+                        }
+                    }
+
                     scene->remove(selectedMesh);
                     //delete selectedMesh;
                     undoManager.pushAction({UndoManager::Action::Delete, beforeState, "", objId});
                     selectedMesh = nullptr;
                     lastMesh = nullptr;
+
+
                 }
             }
             // --- Undo for Duplicate ---

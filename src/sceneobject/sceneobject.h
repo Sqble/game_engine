@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -18,6 +19,7 @@ public:
     virtual ~SceneObject() = default;
 
     virtual void draw(class Shader& shader) = 0;
+    virtual void addChild(SceneObject* child) { }
 
     // Setters
     virtual void setPosition(const glm::vec3& position) { position_ = position; }
@@ -27,6 +29,8 @@ public:
     virtual void setActive(bool active) { isActive_ = active; }
     void setTag(const std::string& tag) { tag_ = tag; }
     void setId(int id) { id_ = id; }
+    void setParentId(int id) { parentId_ = id; }
+    void willBeParent() { isParent_ = true; }
     
     // Type identification
     virtual bool isDrawable() const { return false; }
@@ -36,7 +40,7 @@ public:
     virtual bool isCamera() const { return false; }
     virtual bool isLight() const { return false; }
     virtual bool isPointLight() const { return false; }
-    virtual bool isParent() const { return false; }
+    virtual bool isParent() const { return isParent_; }
     virtual bool isChild() const { return isChild_; }
 
     // Ray intersection (for engine UI mesh selection, raycasting)
@@ -52,17 +56,22 @@ public:
     bool isActive() const { return isActive_; }
     std::string getTag() const { return tag_; }
     int getId() const { return id_; }
+    int getParentId() const { return parentId_; }
 
     // Virtual children getter for tree UI
     virtual const std::vector<SceneObject*>& getChildren() const {
         static const std::vector<SceneObject*> empty;
         return empty;
     }
+    virtual void removeChild(SceneObject* child) { }
 
     static int nextId() { return sceneObjectIdCounter + 1; }
     static int assignNextId() { return sceneObjectIdCounter++; }
     static void setIDCounter(int id) { sceneObjectIdCounter = id; }
+
     bool isChild_ = false;
+    int parentId_ = -1;
+    bool isParent_ = false;
 protected:
     glm::vec3 position_;
     glm::vec3 size_;
@@ -80,11 +89,13 @@ class ParentObject : public T {
 public:
     using T::T; // Inherit constructors
 
+    /*
     ParentObject(const std::vector<SceneObject*>& children) : children_(children) {
         for (SceneObject* child : children_) {
             child->isChild_ = true;
+            child->setParentId(id_);
         }
-    }
+    }*/
 
     void setPosition(const glm::vec3& position) override {
         glm::vec3 delta = position - this->position_;
@@ -132,14 +143,22 @@ public:
     void addChild(SceneObject* child) {
         child->isChild_ = true;
         children_.push_back(child);
+        child->setParentId(this->id_);
+        T::isParent_ = true;
     }
 
+    void removeChild(SceneObject* child) override {
+        children_.erase(std::remove(children_.begin(), children_.end(), child), children_.end());
+        child->isChild_ = false;
+        child->setParentId(-1);
+        if (children_.empty()) {
+            T::isParent_ = false;
+        }
+    }
 
     const std::vector<SceneObject*>& getChildren() const override {
         return children_;
     }
-
-    bool isParent() const override { return true; }
 
 private:
     std::vector<SceneObject*> children_;

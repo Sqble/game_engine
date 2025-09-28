@@ -154,6 +154,8 @@ json serializeObject(const SceneObject* obj) {
     j["active"] = obj->isActive();
     j["tag"] = obj->getTag();
     j["id"] = obj->getId();
+    j["parentId"] = obj->getParentId();
+    j["isParent"] = obj->isParent();
 
     if (obj->isMesh()) {
         const Mesh* mesh = static_cast<const Mesh*>(obj);
@@ -216,16 +218,22 @@ SceneObject* deserializeObject(const json& j, int screenWidth, int screenHeight)
     if (id > sceneObjectIdCounter) {
         SceneObject::setIDCounter(id + 1);
     }
+    int parentId = j.value("parentId", -1);
+    bool isParent = j.value("isParent", false);
 
     std::string type = j.value("type", "unknown");
     if (type == "cube") {
-        Cube *r = new Cube(position, size, color, rotation, active);
+        Cube *r = new ParentObject<Cube>(position, size, color, rotation, active);
         r->setTag(tag);
+        r->setParentId(parentId);
+        if (isParent) r->willBeParent();
         if (id != 0) r->setId(id);
         return r;
     } else if (type == "plane") {
-        Plane *r = new Plane(position, size, color, rotation, active);
+        Plane *r = new ParentObject<Plane>(position, size, color, rotation, active);
         r->setTag(tag);
+        r->setParentId(parentId);
+        if (isParent) r->willBeParent();
         if (id != 0) r->setId(id);
         return r;
     } else if (type == "mesh") {
@@ -240,19 +248,25 @@ SceneObject* deserializeObject(const json& j, int screenWidth, int screenHeight)
         if (!metalPath.empty()) mat.setMetalnessMap(metalPath);
         if (!normalPath.empty()) mat.setNormalMap(normalPath);
         */
-        Mesh* mesh = new Mesh(objPath, mat, position, size, color, rotation, active);
+        Mesh* mesh = new ParentObject<Mesh>(objPath, mat, position, size, color, rotation, active);
         mesh->setTag(tag);
+        mesh->setParentId(parentId);
+        if (isParent) mesh->willBeParent();
         if (id != 0) mesh->setId(id);
         return mesh;
     } else if (type == "camera") {
-        Camera* cam = new Camera(screenWidth, screenHeight, position, rotation);
+        Camera* cam = new ParentObject<Camera>(screenWidth, screenHeight, position, rotation);
         cam->setTag(tag);
+        cam->setParentId(parentId);
+        if (isParent) cam->willBeParent();
         if (id != 0) cam->setId(id);
         return cam;
     } else if (type == "light") {
         int intensity = j.value("intensity", 1.0f);
-        PointLight* light = new PointLight(position, color, intensity, active);
+        PointLight* light = new ParentObject<PointLight>(position, color, intensity, active);
         light->setTag(tag);
+        light->setParentId(parentId);
+        if (isParent) light->willBeParent();
         if (id != 0) light->setId(id);
         return light;
     }
@@ -283,6 +297,20 @@ bool Scene::loadFromFile(const std::string& filename, int screenWidth, int scree
     for (const auto& jObj : jscene["objects"]) {
         SceneObject* obj = deserializeObject(jObj, screenWidth, screenHeight);
         if (obj) add(obj);
+    }
+
+    // setup parent-child relationship
+    for (SceneObject* obj : objects_) {
+        if (obj->isParent()) {
+            //std::cout << "parent found with id: " << obj->getId() << std::endl;
+            int parentId = obj->getId();
+            for (SceneObject* child : objects_) {
+                if (child->getParentId() == parentId) {
+                    //std::cout << "  adding child with id: " << child->getId() << std::endl;
+                    obj->addChild(child);
+                }
+            }
+        }
     }
 
     // Restore active camera
@@ -364,7 +392,7 @@ glm::mat4 Scene::getLightSpaceMatrix() const {
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
     // For shadow mapping, use an orthographic projection (directional) or perspective (spot/point)
-    // We'll use orthographic for now for simplicity
+    // We'll use perspective since we have point lights
     float near_plane = 0.01f, far_plane = 12.0f;
     float fov = glm::radians(90.0f); // 90 degree field of view
     float aspect = 1.0f; // square shadow map

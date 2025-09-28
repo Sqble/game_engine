@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-REM Set PATH to use 64-bit MinGW-w64
+:: Set PATH to use 64-bit MinGW-w64
 set PATH=C:\msys64\mingw64\bin;%PATH%
 
 set BUILD_DIR="build"
@@ -22,7 +22,7 @@ cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_TOOLCHAIN_
 copy compile_commands.json ..
 cmake --build .
 
-REM Run the executable from the correct location
+:: Run the executable from the correct location
 if exist game.exe (
     game.exe
 ) else (

@@ -10,14 +10,16 @@
                 1.0
             ],
             "id": 10,
+            "isParent": false,
+            "parentId": -1,
             "position": [
-                -0.0345071479678154,
-                -0.3011596202850342,
-                15.89114761352539
+                0.2582487463951111,
+                -0.27093052864074707,
+                5.957883358001709
             ],
             "rotation": [
-                -0.20549434423446655,
-                0.08461976051330566,
+                -0.04224926233291626,
+                6.247363090515137,
                 0.0
             ],
             "size": [
@@ -36,6 +38,8 @@
                 1.0
             ],
             "id": 2,
+            "isParent": false,
+            "parentId": -1,
             "position": [
                 0.0,
                 10.0,
@@ -55,7 +59,7 @@
             "type": "camera"
         },
         {
-            "active": true,
+            "active": false,
             "color": [
                 0.8899999856948853,
                 0.7689999938011169,
@@ -63,6 +67,8 @@
             ],
             "id": 3,
             "intensity": 2.0,
+            "isParent": false,
+            "parentId": -1,
             "position": [
                 0.0,
                 0.0,
@@ -89,7 +95,9 @@
                 1.0
             ],
             "id": 4,
+            "isParent": false,
             "objPath": "../assets/table.obj",
+            "parentId": -1,
             "position": [
                 1.0,
                 -1.2999999523162842,
@@ -117,7 +125,9 @@
                 1.0
             ],
             "id": 5,
+            "isParent": false,
             "objPath": "../assets/computer.obj",
+            "parentId": -1,
             "position": [
                 1.0,
                 -0.20000000298023224,
@@ -145,7 +155,9 @@
                 1.0
             ],
             "id": 6,
+            "isParent": false,
             "objPath": "../assets/shelf.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -2.9000000953674316,
@@ -173,7 +185,9 @@
                 1.0
             ],
             "id": 7,
+            "isParent": false,
             "objPath": "../assets/crate.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -2.5,
@@ -201,7 +215,9 @@
                 1.0
             ],
             "id": 8,
+            "isParent": false,
             "objPath": "../assets/crate.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -1.2999999523162842,
@@ -229,7 +245,9 @@
                 1.0
             ],
             "id": 9,
+            "isParent": false,
             "objPath": "../assets/crate.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -1.2999999523162842,
@@ -257,7 +275,9 @@
                 1.0
             ],
             "id": 10,
+            "isParent": false,
             "objPath": "../assets/crate.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -0.10000000149011612,
@@ -285,7 +305,9 @@
                 1.0
             ],
             "id": 11,
+            "isParent": false,
             "objPath": "../assets/crate.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -0.10000000149011612,
@@ -313,8 +335,10 @@
                 1.0
             ],
             "id": 12,
+            "isParent": false,
             "metalnessMap": "../assets/stool_rough.png",
             "objPath": "../assets/stool.obj",
+            "parentId": -1,
             "position": [
                 1.5,
                 -3.0,
@@ -343,9 +367,11 @@
                 1.0
             ],
             "id": 13,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 -3.0,
@@ -374,9 +400,11 @@
                 1.0
             ],
             "id": 14,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 -3.0,
@@ -405,9 +433,11 @@
                 1.0
             ],
             "id": 15,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 1.5,
@@ -436,9 +466,11 @@
                 1.0
             ],
             "id": 16,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 3.0,
                 -0.75,
@@ -467,9 +499,11 @@
                 1.0
             ],
             "id": 17,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 -3.0,
                 -0.75,
@@ -498,9 +532,11 @@
                 1.0
             ],
             "id": 18,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 -0.75,
@@ -529,8 +565,10 @@
                 1.0
             ],
             "id": 19,
+            "isParent": false,
             "normalMap": "../assets/door_frame_rough.png",
             "objPath": "../assets/door_frame.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 -3.0,
@@ -559,7 +597,9 @@
                 1.0
             ],
             "id": 20,
+            "isParent": false,
             "objPath": "../assets/crate.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -2.5,
@@ -587,9 +627,11 @@
                 1.0
             ],
             "id": 21,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 1.5,
@@ -618,9 +660,11 @@
                 1.0
             ],
             "id": 22,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 3.0,
                 -0.75,
@@ -649,9 +693,11 @@
                 1.0
             ],
             "id": 23,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 -3.0,
                 -0.75,
@@ -680,9 +726,11 @@
                 1.0
             ],
             "id": 24,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 -0.75,
@@ -711,8 +759,10 @@
                 1.0
             ],
             "id": 25,
+            "isParent": false,
             "normalMap": "../assets/bed/bed_normal.png",
             "objPath": "../assets/bed/bed.obj",
+            "parentId": -1,
             "position": [
                 -3.0,
                 -2.9000000953674316,
@@ -741,8 +791,10 @@
                 1.0
             ],
             "id": 26,
+            "isParent": false,
             "metalnessMap": "../assets/ladder/ladder_metal.png",
             "objPath": "../assets/ladder/ladder.obj",
+            "parentId": -1,
             "position": [
                 -1.0,
                 -3.0,
@@ -771,9 +823,11 @@
                 1.0
             ],
             "id": 27,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 -3.0,
@@ -802,9 +856,11 @@
                 1.0
             ],
             "id": 28,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 3.0,
                 -0.75,
@@ -833,9 +889,11 @@
                 1.0
             ],
             "id": 29,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 -3.0,
                 -0.75,
@@ -864,8 +922,10 @@
                 1.0
             ],
             "id": 30,
+            "isParent": false,
             "normalMap": "../assets/door_frame_rough.png",
             "objPath": "../assets/door_frame.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 -3.0,
@@ -895,6 +955,8 @@
             ],
             "id": 31,
             "intensity": 1.0,
+            "isParent": false,
+            "parentId": -1,
             "position": [
                 0.0,
                 0.0,
@@ -921,7 +983,9 @@
                 1.0
             ],
             "id": 32,
+            "isParent": false,
             "objPath": "../assets/shelf.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -2.9000000953674316,
@@ -949,7 +1013,9 @@
                 1.0
             ],
             "id": 33,
+            "isParent": false,
             "objPath": "../assets/crate.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -0.10000000149011612,
@@ -977,7 +1043,9 @@
                 1.0
             ],
             "id": 34,
+            "isParent": false,
             "objPath": "../assets/crate.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -1.2999999523162842,
@@ -1005,7 +1073,9 @@
                 1.0
             ],
             "id": 35,
+            "isParent": false,
             "objPath": "../assets/crate.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -0.10000000149011612,
@@ -1033,7 +1103,9 @@
                 1.0
             ],
             "id": 36,
+            "isParent": false,
             "objPath": "../assets/crate.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -2.5,
@@ -1061,7 +1133,9 @@
                 1.0
             ],
             "id": 37,
+            "isParent": false,
             "objPath": "../assets/crate.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -1.2999999523162842,
@@ -1089,7 +1163,9 @@
                 1.0
             ],
             "id": 38,
+            "isParent": false,
             "objPath": "../assets/crate.obj",
+            "parentId": -1,
             "position": [
                 2.0,
                 -2.5,
@@ -1117,9 +1193,11 @@
                 1.0
             ],
             "id": 39,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 1.5,
@@ -1148,9 +1226,11 @@
                 1.0
             ],
             "id": 40,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 -3.0,
@@ -1179,9 +1259,11 @@
                 1.0
             ],
             "id": 41,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 1.5,
@@ -1210,9 +1292,11 @@
                 1.0
             ],
             "id": 42,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 3.0,
                 -0.75,
@@ -1241,9 +1325,11 @@
                 1.0
             ],
             "id": 43,
+            "isParent": false,
             "metalnessMap": "../assets/floor_rough.png",
             "normalMap": "../assets/floor_rough.png",
             "objPath": "../assets/floor.obj",
+            "parentId": -1,
             "position": [
                 -3.0,
                 -0.75,
@@ -1272,8 +1358,10 @@
                 1.0
             ],
             "id": 44,
+            "isParent": false,
             "normalMap": "../assets/door_frame_rough.png",
             "objPath": "../assets/door_frame.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 -3.0,
@@ -1303,6 +1391,8 @@
             ],
             "id": 45,
             "intensity": 2.0,
+            "isParent": false,
+            "parentId": -1,
             "position": [
                 0.0,
                 0.0,
@@ -1329,7 +1419,9 @@
                 1.0
             ],
             "id": 46,
+            "isParent": false,
             "objPath": "../assets/locker/locker_closed.obj",
+            "parentId": -1,
             "position": [
                 -2.0,
                 -3.0,
@@ -1357,7 +1449,9 @@
                 1.0
             ],
             "id": 47,
+            "isParent": false,
             "objPath": "../assets/hatch/hatch.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 1.5,
@@ -1385,7 +1479,9 @@
                 1.0
             ],
             "id": 48,
+            "isParent": false,
             "objPath": "../assets/CeilingLight/ceiling_light.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 1.5,
@@ -1413,7 +1509,9 @@
                 1.0
             ],
             "id": 49,
+            "isParent": false,
             "objPath": "../assets/CeilingLight/ceiling_light.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 1.5,
@@ -1441,7 +1539,9 @@
                 1.0
             ],
             "id": 50,
+            "isParent": false,
             "objPath": "../assets/CeilingLight/ceiling_light.obj",
+            "parentId": -1,
             "position": [
                 0.0,
                 1.5,
