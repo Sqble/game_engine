@@ -13,13 +13,13 @@
             "isParent": false,
             "parentId": -1,
             "position": [
-                0.2582487463951111,
-                -0.27093052864074707,
-                5.957883358001709
+                0.14073894917964935,
+                -0.16411137580871582,
+                7.177642345428467
             ],
             "rotation": [
-                -0.04224926233291626,
-                6.247363090515137,
+                -0.14969408512115479,
+                25.16577911376953,
                 0.0
             ],
             "size": [
@@ -59,7 +59,7 @@
             "type": "camera"
         },
         {
-            "active": false,
+            "active": true,
             "color": [
                 0.8899999856948853,
                 0.7689999938011169,
@@ -155,7 +155,7 @@
                 1.0
             ],
             "id": 6,
-            "isParent": false,
+            "isParent": true,
             "objPath": "../assets/shelf.obj",
             "parentId": -1,
             "position": [
@@ -187,7 +187,7 @@
             "id": 7,
             "isParent": false,
             "objPath": "../assets/crate.obj",
-            "parentId": -1,
+            "parentId": 6,
             "position": [
                 2.0,
                 -2.5,
@@ -217,7 +217,7 @@
             "id": 8,
             "isParent": false,
             "objPath": "../assets/crate.obj",
-            "parentId": -1,
+            "parentId": 6,
             "position": [
                 2.0,
                 -1.2999999523162842,
@@ -247,7 +247,7 @@
             "id": 9,
             "isParent": false,
             "objPath": "../assets/crate.obj",
-            "parentId": -1,
+            "parentId": 6,
             "position": [
                 2.0,
                 -1.2999999523162842,
@@ -277,7 +277,7 @@
             "id": 10,
             "isParent": false,
             "objPath": "../assets/crate.obj",
-            "parentId": -1,
+            "parentId": 6,
             "position": [
                 2.0,
                 -0.10000000149011612,
@@ -307,7 +307,7 @@
             "id": 11,
             "isParent": false,
             "objPath": "../assets/crate.obj",
-            "parentId": -1,
+            "parentId": 6,
             "position": [
                 2.0,
                 -0.10000000149011612,
@@ -599,7 +599,7 @@
             "id": 20,
             "isParent": false,
             "objPath": "../assets/crate.obj",
-            "parentId": -1,
+            "parentId": 6,
             "position": [
                 2.0,
                 -2.5,
@@ -983,7 +983,7 @@
                 1.0
             ],
             "id": 32,
-            "isParent": false,
+            "isParent": true,
             "objPath": "../assets/shelf.obj",
             "parentId": -1,
             "position": [
@@ -1015,7 +1015,7 @@
             "id": 33,
             "isParent": false,
             "objPath": "../assets/crate.obj",
-            "parentId": -1,
+            "parentId": 32,
             "position": [
                 2.0,
                 -0.10000000149011612,
@@ -1045,7 +1045,7 @@
             "id": 34,
             "isParent": false,
             "objPath": "../assets/crate.obj",
-            "parentId": -1,
+            "parentId": 32,
             "position": [
                 2.0,
                 -1.2999999523162842,
@@ -1075,7 +1075,7 @@
             "id": 35,
             "isParent": false,
             "objPath": "../assets/crate.obj",
-            "parentId": -1,
+            "parentId": 32,
             "position": [
                 2.0,
                 -0.10000000149011612,
@@ -1105,7 +1105,7 @@
             "id": 36,
             "isParent": false,
             "objPath": "../assets/crate.obj",
-            "parentId": -1,
+            "parentId": 32,
             "position": [
                 2.0,
                 -2.5,
@@ -1135,7 +1135,7 @@
             "id": 37,
             "isParent": false,
             "objPath": "../assets/crate.obj",
-            "parentId": -1,
+            "parentId": 32,
             "position": [
                 2.0,
                 -1.2999999523162842,
@@ -1165,7 +1165,7 @@
             "id": 38,
             "isParent": false,
             "objPath": "../assets/crate.obj",
-            "parentId": -1,
+            "parentId": 32,
             "position": [
                 2.0,
                 -2.5,

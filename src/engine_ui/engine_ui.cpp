@@ -418,6 +418,33 @@ static void ShowSceneObjectTree(SceneObject* obj, SceneObject*& selectedMesh, Sc
     } else {
         ImGui::TreeNodeEx(label, flags | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen);
     }
+
+    // Begin drag source
+    if (ImGui::BeginDragDropSource()) {
+        ImGui::SetDragDropPayload("SCENE_OBJECT_PTR", &obj, sizeof(SceneObject*));
+        ImGui::Text("Move %s", label);
+        ImGui::EndDragDropSource();
+    }
+
+    // Accept drop target
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCENE_OBJECT_PTR")) {
+            SceneObject* droppedObj = *(SceneObject**)payload->Data;
+            // Prevent self-parenting and circular parenting
+            if (droppedObj != obj && !droppedObj->isParent_ && !droppedObj->isChild_) {
+                // Remove from previous parent if any
+                int prevParentId = droppedObj->getParentId();
+                if (prevParentId != -1) {
+                    SceneObject* prevParent = scene->getObjectWithId(prevParentId);
+                    if (prevParent) prevParent->removeChild(droppedObj);
+                }
+                // Add as child
+                obj->addChild(droppedObj);
+            }
+        }
+        ImGui::EndDragDropTarget();
+    }
+
     if (ImGui::IsItemClicked()) {
         selectedMesh = obj;
         scene->getGizmo()->setPosition(selectedMesh->getPosition());
