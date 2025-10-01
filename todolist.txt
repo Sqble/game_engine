@@ -7,6 +7,7 @@ Working On:
 Spotlight duplication and properties
 Cameras in scene view list with their properties
 Shadowmap support for spotlights
+Fog settings stored in scene, saved and loaded, and editable in scene editing mode 
 
 =============
 Tickets:
@@ -21,7 +22,7 @@ ICEBOX:
 
 Shader: Cook-Torrance BRDF PBR Lighting Model
 Optimization: Bake Shadow Map, more culling, back to front render
-Rendering: SSAO, Anti Aliasing, Bloom, Fog, Pixelation Shader
+Rendering: SSAO, Anti Aliasing, Bloom, Pixelation Shader
 Physics: velocity + hasGravity
 Sound: Sound Player Object, SoundManager
 Animation: Static transform animation system

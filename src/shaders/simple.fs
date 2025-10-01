@@ -28,6 +28,11 @@ uniform sampler2D metalnessMap;
 uniform bool useNormalMap = false;
 uniform sampler2D normalMap;
 
+// Volumetric fog uniforms
+uniform vec3 fogColor; // Color of the fog
+uniform float fogDensity; // Density of the fog
+uniform float fogHeight; // Height at which fog is densest
+
 //variables passed in main loop
 uniform vec3 viewPos; //viewport position
 uniform int numPointLights; //number of point lights in scene
@@ -164,6 +169,13 @@ void main() {
     for (int i = 0; i < numSpotLights; ++i) {
         result += calcLight(spotLights[i].position, spotLights[i].color, norm, viewDir, albedo, rough, metal, shadow, FragPos, true, spotLights[i].direction, spotLights[i].cutoff);
     }
-    FragColor = vec4(result, useMeshTexture ? texture(u_texture, TexCoords).a : 1.0);
+    // Volumetric fog calculation
+    float distance = length(viewPos - FragPos);
+    float heightFactor = exp(-(FragPos.y - fogHeight) * fogDensity);
+    float fogAmount = 1.0 - exp(-distance * fogDensity * heightFactor);
+    fogAmount = clamp(fogAmount, 0.0, 1.0);
+
+    vec3 finalColor = mix(result, fogColor, fogAmount);
+    FragColor = vec4(finalColor, useMeshTexture ? texture(u_texture, TexCoords).a : 1.0);
 
 }

@@ -36,6 +36,11 @@ void Scene::draw(Shader &shader) {
     shader.setVec3("globalAmbient", glm::vec3());
     shader.setMat4("lightSpaceMatrix", getLightSpaceMatrix());
 
+    // Hardcoded fog volume
+    shader.setVec3("fogColor", glm::vec3(0.4f, 0.55f, 0.3f));
+    shader.setFloat("fogDensity", 0.03f);
+    shader.setFloat("fogHeight", -3.0f); 
+
     // Set up lights FIRST before drawing any objects
     int numPointLights = 0, numSpotLights = 0;
     for (LightObject *light : lightObjects_) {
