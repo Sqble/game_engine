@@ -231,7 +231,7 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                         editColor = selectedMeshCast->getColor();
                         editActive = selectedMeshCast->isActive();
                     }
-                } else if (selectedMesh->isPointLight()) {
+                } else if (selectedMesh->isLight()) {
                     PointLight* light = static_cast<PointLight*>(selectedMesh);
                     editPos = light->getPosition();
                     editColor = light->getColor();
@@ -289,7 +289,7 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                     undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
                 }
             // --- Undo for PointLight ---
-            } else if (selectedMesh->isPointLight()) {
+            } else if (selectedMesh->isLight()) {
                 ImGui::Text("Selected Light Properties:");
                 PointLight* light = static_cast<PointLight*>(selectedMesh);
                 json beforeState, afterState;
@@ -373,7 +373,7 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                     scene->add(newMesh);
                     // Push create action
                     undoManager.pushAction({UndoManager::Action::Duplicate, "", serializeObject(newMesh), newMesh->getId() ? newMesh->getId() : 0});
-                } else if (objToDuplicate->isPointLight()) {
+                } else if (objToDuplicate->isLight()) {
                     PointLight* light = static_cast<PointLight*>(objToDuplicate);
                     PointLight* newLight = new PointLight(
                         light->getPosition() + glm::vec3(1,0,0), // Offset position
@@ -402,7 +402,7 @@ static void ShowSceneObjectTree(SceneObject* obj, SceneObject*& selectedMesh, Sc
     if (!tag.empty()) {
         displayName = tag;
     } else {
-        displayName = obj->isMesh() ? "Mesh" : obj->isPointLight() ? "Light" : obj->isParent() ? "Parent" : "Object";
+        displayName = obj->isMesh() ? "Mesh" : obj->isLight() ? "Light" : obj->isParent() ? "Parent" : "Object";
     }
     char label[128];
     snprintf(label, sizeof(label), "[%s] (%.2f, %.2f, %.2f)##node%d", displayName.c_str(), pos.x, pos.y, pos.z, nodeIdx++);
@@ -474,7 +474,7 @@ static void ShowSceneViewWindow(Scene* scene, SceneObject*& selectedMesh, bool s
         ShowSceneObjectTree(mesh, selectedMesh, scene, nodeIdx);
     }
     // Show all top-level lights
-    for (auto light : scene->getPointLights()) {
+    for (auto light : scene->getLights()) {
         ShowSceneObjectTree(light, selectedMesh, scene, nodeIdx);
     }
     ImGui::End();

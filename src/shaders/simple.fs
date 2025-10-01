@@ -30,7 +30,8 @@ uniform sampler2D normalMap;
 
 //variables passed in main loop
 uniform vec3 viewPos; //viewport position
-uniform int numLights; //number of lights in scene
+uniform int numPointLights; //number of point lights in scene
+uniform int numSpotLights; //number of spot lights in scene
 uniform vec3 globalAmbient; // Global ambient light color
 
 // Shadow mapping
@@ -60,12 +61,50 @@ float ShadowCalculation(vec3 fragPos)
     return shadow;
 }
 
+
 struct PointLight {
     vec3 position;
     vec3 color;
 };
 
+struct SpotLight {
+    vec3 position;
+    vec3 direction;
+    vec3 color;
+    float cutoff;
+};
+
 uniform PointLight lights[MAX_LIGHTS];
+uniform SpotLight spotLights[MAX_LIGHTS];
+
+vec3 calcLight(vec3 lightPos, vec3 lightColor, vec3 norm, vec3 viewDir, vec3 albedo, float rough, float metal, float shadow, vec3 fragPos, bool isSpot, vec3 spotDir, float cutoff) {
+    float distance = length(lightPos - fragPos);
+    float attenuation = 1.0 / (1.0 + 0.12 * distance + 0.05 * (distance * distance));
+    float intensity = (lightColor.x + lightColor.y + lightColor.z) / 3.0;
+    if (attenuation * intensity * 0.5 < 0.03) return vec3(0);
+    float ambientStrength = 0.5;
+    vec3 ambient = ambientStrength * lightColor;
+    vec3 lightDir = normalize(lightPos - fragPos);
+    float spotEffect = 1.0;
+    if (isSpot) {
+        float theta = dot(normalize(-lightDir), normalize(spotDir));
+        float epsilon = 0.01;
+        spotEffect = smoothstep(cutoff - epsilon, cutoff + epsilon, theta);
+        if (theta < cutoff) return vec3(0);
+    }
+    float diff = max(dot(norm, lightDir), 0.0) * spotEffect;
+    vec3 diffuse = diff * lightColor;
+    float specularStrength = (1.0 - rough);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * lightColor * (0.5 + metal * 0.5) * spotEffect;
+    diffuse *= (1.0 - metal);
+    specular *= (0.5 + metal * 0.5);
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
+    return ambient * albedo + (1.0 - shadow) * (diffuse * albedo + specular);
+}
 
 vec3 getAlbedo() {
     if (useMeshTexture) {
@@ -117,44 +156,13 @@ void main() {
 
     vec3 result = globalAmbient * albedo;
 
-    for (int i = 0; i < numLights; ++i) {
-        // calculate distance falloff of light point
-        float distance = length(lights[i].position - FragPos);
-        float attenuation = 1.0 / (1.0 + 0.12 * distance + 0.05 * (distance * distance));
-
-        //skip light if too far away
-        float intensity = (lights[i].color.x + lights[i].color.y + lights[i].color.z) / 3.0;
-        if (attenuation * intensity * 0.5 < 0.03) {
-            continue;
-        }
-
-        //ambient
-        float ambientStrength = 0.5;
-        vec3 ambient = ambientStrength * lights[i].color;
-
-        //diffuse
-        vec3 lightDir = normalize(lights[i].position - FragPos);
-        float diff = max(dot(norm,lightDir), 0.0);
-        vec3 diffuse = diff * lights[i].color;
-
-        //specular
-        float specularStrength = (1.0 - rough); // more rough = less specular
-        vec3 reflectDir = reflect(-lightDir, norm);
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32); // Shininess factor hardcoded to 32
-        //vec3 specular = specularStrength * spec * lights[i].color;
-        vec3 specular = specularStrength * spec * lights[i].color * (0.5 + metal * 0.5);
-
-        // more metallic = less diffuse, more specular
-        diffuse *= (1.0 - metalness);
-        specular *= (0.5 + metalness * 0.5);
-
-        // apply distance falloff to lighting components
-        ambient *= attenuation;
-        diffuse *= attenuation;
-        specular *= attenuation;
-
-        // Apply shadow to diffuse and specular
-        result += ambient * albedo + (1.0 - shadow) * (diffuse * albedo + specular);
+    // Point lights
+    for (int i = 0; i < numPointLights; ++i) {
+        result += calcLight(lights[i].position, lights[i].color, norm, viewDir, albedo, rough, metal, shadow, FragPos, false, vec3(0), 0.0);
+    }
+    // Spot lights
+    for (int i = 0; i < numSpotLights; ++i) {
+        result += calcLight(spotLights[i].position, spotLights[i].color, norm, viewDir, albedo, rough, metal, shadow, FragPos, true, spotLights[i].direction, spotLights[i].cutoff);
     }
     FragColor = vec4(result, useMeshTexture ? texture(u_texture, TexCoords).a : 1.0);
 

@@ -1,0 +1,76 @@
+todo list for my game engine:
+
+========
+Working On: 
+========
+
+Spotlight duplication and properties
+Cameras in scene view list with their properties
+Shadowmap support for spotlights
+
+=============
+Tickets:
+=============
+
+1. looking/rotation confusion in camera constructor
+looking at a location vs xyz rotation
+
+=======
+ICEBOX:
+=======
+
+Shader: Cook-Torrance BRDF PBR Lighting Model
+Optimization: Bake Shadow Map, more culling, back to front render
+Rendering: SSAO, Anti Aliasing, Bloom, Fog, Pixelation Shader
+Physics: velocity + hasGravity
+Sound: Sound Player Object, SoundManager
+Animation: Static transform animation system
+
+Engine UI: 
+1. icon for scene view object type
+2. Materials in scene editing properties window 
+(if tex, then path if value let me change it)
+3. visualize projection cones (for cameras, shadow projections, spotlights)
+4. hold right click allows lookinga round with mouse in engine ui 
+
+==========
+So you're confident enough in your current engine capabilities?
+Game Logic:
+==========
+
+Atmosphere:
+crates shifting back and forth, pump pumping. thinking sea of thieves
+lights flickering, colored status lights for stations illuminate the room. 
+
+Sound Design:
+deep ocean depth low frequency background sound
+machines whirring
+Creaky hull
+flourescent light buzz
+
+Systems:
+Object interactable flag
+    engine requirements not met: flags; tags but vector
+
+show text on the screen with prompt: "press E to interact"
+when rayIntersection hits an object with a interactable flag 
+
+interact with terminal in control room to open up terminal UI panel 
+    engine requirements not met: game UI Canvas
+
+Submarine State:
+    Idle
+    Driving
+    In Fight
+    Docked at outpost
+    Docked at mission objective
+SubmarineInMission
+
+Inventory system
+
+health bar and stamina bar - docked with inventory system on bottom of screen in gameUI component
+
+utilize rayIntersection for collision in movement
+
+Mission class - has a type of mission "Cargo Transport", "Kill Submarine", "Kill Sea Creature", "Explore Wreck"
+Each goal has a completion check first we will do cargo transport which checks if we are at a certain outpost ID

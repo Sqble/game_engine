@@ -35,6 +35,7 @@ public:
     const std::vector<SceneObject*>& getPlanes() const;
     const std::vector<SceneObject*>& getMeshes() const;
     const std::vector<LightObject*>& getPointLights() const;
+    const std::vector<LightObject*>& getLights() const { return lightObjects_; }
     const std::vector<Camera*>& getCameras() const { return cameras_; }
 
 

@@ -234,6 +234,9 @@ int main() {
     scene->add(parentLight);
     */
 
+    SpotLight* spotLight = new SpotLight(glm::vec3(0,2,0), glm::vec3(0,-1,0), glm::vec3(1,1,1), 3.0f, 22.5f, true);
+    scene->add(spotLight);
+
     // Scene Editing Mode Inits
     bool sceneEditingMode = false;
     bool lastKey1State = false;

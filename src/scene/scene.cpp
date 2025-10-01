@@ -37,14 +37,20 @@ void Scene::draw(Shader &shader) {
     shader.setMat4("lightSpaceMatrix", getLightSpaceMatrix());
 
     // Set up lights FIRST before drawing any objects
-    int i = 0;
+    int numPointLights = 0, numSpotLights = 0;
     for (LightObject *light : lightObjects_) {
         if (light->isActive()) {
-            light->draw(shader, i);
-            ++i;
+            if (light->isPointLight()) {
+                light->draw(shader, numPointLights);
+                numPointLights++;
+            } else {
+                light->draw(shader, numSpotLights);
+                numSpotLights++;
+            }
         }
     }
-    shader.setInt("numLights", static_cast<int>(i));
+    shader.setInt("numPointLights", numPointLights);
+    shader.setInt("numSpotLights", numSpotLights);
 
     // Frustum culling setup
     Frustum frustum;

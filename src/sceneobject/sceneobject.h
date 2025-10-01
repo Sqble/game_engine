@@ -40,6 +40,7 @@ public:
     virtual bool isCamera() const { return false; }
     virtual bool isLight() const { return false; }
     virtual bool isPointLight() const { return false; }
+    virtual bool isSpotLight() const { return false; }
     virtual bool isParent() const { return isParent_; }
     virtual bool isChild() const { return isChild_; }
 

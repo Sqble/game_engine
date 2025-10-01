@@ -167,47 +167,50 @@ void Mesh::shadowDraw(Shader& shader) {
 }
 
 bool Mesh::intersectRay(const glm::vec3& rayOrigin, const glm::vec3& rayDir, float& hitDist) const {
-    // Compute AABB in world space
-    glm::vec3 minV(FLT_MAX), maxV(-FLT_MAX);
-    for (const auto& v : vertices) {
-        glm::vec4 worldV = model_ * glm::vec4(v, 1.0f);
-        minV = glm::min(minV, glm::vec3(worldV));
-        maxV = glm::max(maxV, glm::vec3(worldV));
+    // 1. Fast AABB check
+    AABB worldAABB = getWorldAABB();
+    // Ray-AABB intersection (slab method)
+    glm::vec3 invDir = 1.0f / rayDir;
+    glm::vec3 t0s = (worldAABB.min - rayOrigin) * invDir;
+    glm::vec3 t1s = (worldAABB.max - rayOrigin) * invDir;
+    glm::vec3 tsmaller = glm::min(t0s, t1s);
+    glm::vec3 tbigger = glm::max(t0s, t1s);
+    float tmin = std::max(std::max(tsmaller.x, tsmaller.y), tsmaller.z);
+    float tmax = std::min(std::min(tbigger.x, tbigger.y), tbigger.z);
+    if (tmax < 0 || tmin > tmax) return false;
+
+    // 2. Mesh collider: ray-triangle intersection
+    bool hit = false;
+    float closestDist = FLT_MAX;
+    for (size_t i = 0; i + 2 < indices.size(); i += 3) {
+        // Get triangle vertices in world space
+        glm::vec3 v0 = glm::vec3(model_ * glm::vec4(vertices[indices[i]], 1.0f));
+        glm::vec3 v1 = glm::vec3(model_ * glm::vec4(vertices[indices[i+1]], 1.0f));
+        glm::vec3 v2 = glm::vec3(model_ * glm::vec4(vertices[indices[i+2]], 1.0f));
+
+        // Möller–Trumbore intersection
+        glm::vec3 edge1 = v1 - v0;
+        glm::vec3 edge2 = v2 - v0;
+        glm::vec3 h = glm::cross(rayDir, edge2);
+        float a = glm::dot(edge1, h);
+        if (fabs(a) < 1e-6) continue; // Parallel
+        float f = 1.0f / a;
+        glm::vec3 s = rayOrigin - v0;
+        float u = f * glm::dot(s, h);
+        if (u < 0.0f || u > 1.0f) continue;
+        glm::vec3 q = glm::cross(s, edge1);
+        float v = f * glm::dot(rayDir, q);
+        if (v < 0.0f || u + v > 1.0f) continue;
+        float t = f * glm::dot(edge2, q);
+        if (t > 1e-6 && t < closestDist) {
+            closestDist = t;
+            hit = true;
+        }
     }
-
-    // Slab method for ray-AABB intersection
-    float tmin = (minV.x - rayOrigin.x) / rayDir.x;
-    float tmax = (maxV.x - rayOrigin.x) / rayDir.x;
-    if (tmin > tmax) std::swap(tmin, tmax);
-
-    float tymin = (minV.y - rayOrigin.y) / rayDir.y;
-    float tymax = (maxV.y - rayOrigin.y) / rayDir.y;
-    if (tymin > tymax) std::swap(tymin, tymax);
-
-    if ((tmin > tymax) || (tymin > tmax))
-        return false;
-
-    if (tymin > tmin)
-        tmin = tymin;
-    if (tymax < tmax)
-        tmax = tymax;
-
-    float tzmin = (minV.z - rayOrigin.z) / rayDir.z;
-    float tzmax = (maxV.z - rayOrigin.z) / rayDir.z;
-    if (tzmin > tzmax) std::swap(tzmin, tzmax);
-
-    if ((tmin > tzmax) || (tzmin > tmax))
-        return false;
-
-    if (tzmin > tmin)
-        tmin = tzmin;
-    if (tzmax < tmax)
-        tmax = tzmax;
-
-    if (tmax < 0) // Box is behind ray
-        return false;
-
-    hitDist = (tmin >= 0) ? tmin : tmax;
-    return true;
+    if (hit) {
+        hitDist = closestDist;
+        return true;
+    }
+    return false;
 }
 
