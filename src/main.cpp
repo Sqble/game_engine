@@ -203,6 +203,7 @@ int main() {
     ImGuiIO& io = ImGui::GetIO(); 
     (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; 
+    io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
     ImGui::StyleColorsDark();
     
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -249,8 +250,12 @@ int main() {
     bool sceneEditingMode = false;
     bool lastKey1State = false;
     bool lastKey2State = false;
+    bool lastKeyEState = false;
     bool lastKeySPressed = false;
     SceneObject* selectedMesh = nullptr;
+    SceneObject* interactTarget = nullptr;
+    std::string interactionPrompt;
+    const float interactionRange = 3.0f;
 
     // Center mouse before changing capture modes
     mouseCaptured = true;   
@@ -309,6 +314,14 @@ int main() {
         bool key1Pressed = glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS;
         if (altPressed && key1Pressed && !lastKey1State) {
             sceneEditingMode = !sceneEditingMode;
+            if (sceneEditingMode) {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                mouseCaptured = false;
+            } else {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                mouseCaptured = true;
+            }
+            firstMouse = true;
         }
         lastKey1State = altPressed && key1Pressed;
         bool key2Pressed = glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS;
@@ -329,17 +342,14 @@ int main() {
         }
         lastKeySPressed = altPressed && keySPressed;
 
-        // Mouse capture/release logic
-        bool wantCaptureMouse = ImGui::GetIO().WantCaptureMouse;
-        if (!sceneEditingMode && !wantCaptureMouse && !mouseCaptured) {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            mouseCaptured = true;
-            firstMouse = true;
-        } else if ((sceneEditingMode || wantCaptureMouse) && mouseCaptured) {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            mouseCaptured = false;
+        // Keep GLFW cursor mode aligned with edit/game mode.
+        int desiredCursorMode = sceneEditingMode ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
+        int currentCursorMode = glfwGetInputMode(window, GLFW_CURSOR);
+        if (currentCursorMode != desiredCursorMode) {
+            glfwSetInputMode(window, GLFW_CURSOR, desiredCursorMode);
             firstMouse = true;
         }
+        mouseCaptured = desiredCursorMode == GLFW_CURSOR_DISABLED;
 
 
         // GAME LOOP
@@ -371,6 +381,67 @@ int main() {
                 }
             }
         }
+
+        auto getInteractionPromptForObject = [](SceneObject* object) -> std::string {
+            if (!object) {
+                return "";
+            }
+
+            const std::string tag = object->getTag();
+            if (tag == "computer") {
+                return "[E] Use Computer";
+            }
+            if (tag == "locker") {
+                return "[E] Open Locker";
+            }
+
+            return "";
+        };
+
+        interactionPrompt.clear();
+        interactTarget = nullptr;
+
+        if (!sceneEditingMode) {
+            Camera* activeCamera = scene->getActiveCamera();
+            if (activeCamera) {
+                const float screenCenterX = screenWidth * 0.5f;
+                const float screenCenterY = screenHeight * 0.5f;
+                glm::vec3 rayDir = Raycast::getRayFromScreen(screenCenterX, screenCenterY, screenWidth, screenHeight, activeCamera);
+                glm::vec3 rayOrigin = activeCamera->getPosition();
+
+                float closestDist = std::numeric_limits<float>::max();
+                SceneObject* closestInteractable = nullptr;
+
+                for (auto mesh : scene->getMeshes()) {
+                    float hitDist;
+                    if (!mesh->intersectRay(rayOrigin, rayDir, hitDist)) {
+                        continue;
+                    }
+
+                    const std::string prompt = getInteractionPromptForObject(mesh);
+                    if (prompt.empty() || hitDist > interactionRange || hitDist >= closestDist) {
+                        continue;
+                    }
+
+                    closestDist = hitDist;
+                    closestInteractable = mesh;
+                    interactionPrompt = prompt;
+                }
+
+                interactTarget = closestInteractable;
+            }
+        }
+
+        bool keyEPressed = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS;
+        if (!sceneEditingMode && interactTarget && keyEPressed && !lastKeyEState) {
+            const std::string tag = interactTarget->getTag();
+            if (tag == "computer") {
+                ShowToast("Computer interaction not implemented yet.");
+            } else if (tag == "locker") {
+                ShowToast("Locker interaction not implemented yet.");
+            }
+        }
+        lastKeyEState = keyEPressed;
 
         submarine.update(dt);
 
@@ -414,6 +485,10 @@ int main() {
         ImGui::NewFrame();
         
         ShowEngineUI(scene, screenWidth, screenHeight, selectedMesh, sceneEditingMode, camera);
+        RenderToast(screenWidth);
+        if (!sceneEditingMode) {
+            RenderInteractionPrompt(screenWidth, screenHeight, interactionPrompt);
+        }
 
         // Render ImGui
         ImGui::Render();

@@ -143,7 +143,7 @@
                 1.0,
                 1.0
             ],
-            "tag": "",
+            "tag": "computer",
             "texture": "assets/computer.png",
             "type": "mesh"
         },
@@ -1437,7 +1437,7 @@
                 1.0,
                 1.0
             ],
-            "tag": "",
+            "tag": "locker",
             "texture": "assets/locker/locker_closed.png",
             "type": "mesh"
         },

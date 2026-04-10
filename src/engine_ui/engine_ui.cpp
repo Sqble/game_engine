@@ -42,12 +42,32 @@ void RenderToast(int screenWidth) {
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoSavedSettings |
                              ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav |
                              ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
-                             ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_AlwaysAutoResize;
+                             ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_AlwaysAutoResize |
+                             ImGuiWindowFlags_NoInputs;
 
     ImGui::Begin("##ToastBar", nullptr, flags);
     ImGui::SetCursorPosY(10); // Center vertically
     ImGui::SetCursorPosX((screenWidth - ImGui::CalcTextSize(toastMessage.c_str()).x) * 0.5f); // Center horizontally
     ImGui::Text("%s", toastMessage.c_str());
+    ImGui::End();
+}
+
+void RenderInteractionPrompt(int screenWidth, int screenHeight, const std::string& prompt) {
+    if (prompt.empty()) {
+        return;
+    }
+
+    ImGui::SetNextWindowPos(ImVec2(screenWidth * 0.5f, screenHeight - 32.0f), ImGuiCond_Always, ImVec2(0.5f, 1.0f));
+    ImGui::SetNextWindowBgAlpha(0.8f);
+
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoSavedSettings |
+                             ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav |
+                             ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+                             ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_AlwaysAutoResize |
+                             ImGuiWindowFlags_NoInputs;
+
+    ImGui::Begin("##InteractionPrompt", nullptr, flags);
+    ImGui::TextUnformatted(prompt.c_str());
     ImGui::End();
 }
 
@@ -232,7 +252,6 @@ void ShowEngineUI(Scene* scene, int screenWidth, int screenHeight, SceneObject*&
     ShowSceneViewWindow(scene, selectedMesh, sceneEditingMode);
     ShowAssetListWindow(scene);
 
-    RenderToast(screenWidth);
     ImGui::End(); // End EngineDockSpace
 }
 
