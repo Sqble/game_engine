@@ -16,8 +16,16 @@ install_deps() {
 configure_and_build() {
     pushd "$BUILD_DIR"
 
-    cmake .. -DCMAKE_BUILD_TYPE=Release
+    cmake .. -DCMAKE_BUILD_TYPE=Release "$@"
     cmake --build . -j$(nproc)
+
+    popd
+}
+
+run_tests() {
+    pushd "$BUILD_DIR"
+
+    ctest --output-on-failure
 
     popd
 }
@@ -33,6 +41,10 @@ case "${1:-run}" in
     build)
         configure_and_build
         ;;
+    test)
+        configure_and_build -DBUILD_TESTING=ON
+        run_tests
+        ;;
     run)
         configure_and_build
         run_game
@@ -41,7 +53,7 @@ case "${1:-run}" in
         rm -rf "$BUILD_DIR"
         ;;
     *)
-        echo "Usage: $0 [deps|build|run|clean]"
+        echo "Usage: $0 [deps|build|test|run|clean]"
         exit 1
         ;;
 esac

@@ -4,6 +4,8 @@ project(game)
 set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${CMAKE_BINARY_DIR}")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
+include(CTest)
+
 find_package(PkgConfig REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
@@ -35,6 +37,29 @@ target_link_libraries(game PRIVATE
 )
 
 target_include_directories(game PRIVATE ${EPOXY_INCLUDE_DIRS})
+
+if(BUILD_TESTING)
+    add_executable(engine_tests
+        tests/test_main.cpp
+        src/sceneobject/sceneobject.cpp
+        src/game/inventory/item_definition.cpp
+        src/game/inventory/inventory_container.cpp
+        src/game/inventory/inventory_system.cpp
+    )
+
+    target_link_libraries(engine_tests PRIVATE glm::glm)
+    target_include_directories(engine_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+    set(ENGINE_TEST_CASES
+        "SceneObject suite"
+        "InventoryContainer suite"
+        "InventorySystem suite"
+    )
+
+    foreach(test_case IN LISTS ENGINE_TEST_CASES)
+        add_test(NAME "${test_case}" COMMAND engine_tests "${test_case}")
+    endforeach()
+endif()
 
 # Copy scene.json to build directory
 file(COPY "${CMAKE_SOURCE_DIR}/scene.json" DESTINATION "${CMAKE_BINARY_DIR}")
