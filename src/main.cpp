@@ -32,10 +32,21 @@
 #include "includes/imgui/imgui_internal.h"
 
 //Game logic includes
+#include "game/inventory/inventory_system.h"
+#include "game/inventory/item_definition.h"
 #include "game/submarine/submarine.h"
 
 void errorCallback(int error, const char *description) {
     std::cerr << "GLFW Error: " << error << ": " << description << std::endl;
+}
+
+static std::string GetInventorySlotName(const InventorySlot& slot) {
+    if (slot.isEmpty()) {
+        return "Empty Slot";
+    }
+
+    const ItemDefinition* definition = GetItemDefinitionById(slot.itemId);
+    return definition ? definition->name : slot.itemId;
 }
 
 
@@ -251,11 +262,24 @@ int main() {
     bool lastKey1State = false;
     bool lastKey2State = false;
     bool lastKeyEState = false;
+    bool lastKeyEscapeState = false;
     bool lastKeySPressed = false;
     SceneObject* selectedMesh = nullptr;
     SceneObject* interactTarget = nullptr;
     std::string interactionPrompt;
     const float interactionRange = 3.0f;
+    InventorySystem inventorySystem(8, 6);
+
+    std::vector<int> lockerIds;
+    const std::vector<SceneObject*> lockers = scene->getObjectsWithTag("locker");
+    lockerIds.reserve(lockers.size());
+    for (SceneObject* locker : lockers) {
+        lockerIds.push_back(locker->getId());
+    }
+    inventorySystem.initializeLockers(lockerIds);
+    if (!lockerIds.empty()) {
+        inventorySystem.seedLockerWithItem(lockerIds.front(), "wrench");
+    }
 
     // Center mouse before changing capture modes
     mouseCaptured = true;   
@@ -280,6 +304,7 @@ int main() {
         float last_time = time;
         time = (float)glfwGetTime();
         dt = time - last_time;
+        const bool gameplayInputEnabled = !sceneEditingMode && !inventorySystem.isLockerOpen();
 
         //background color
         float red = 0;
@@ -302,15 +327,25 @@ int main() {
         };
 
         //Manage Inputs
-        for (const auto& ia : inputActions) {
-            if (glfwGetKey(window, ia.key) == GLFW_PRESS) {
-                ia.action();
+        if (gameplayInputEnabled) {
+            for (const auto& ia : inputActions) {
+                if (glfwGetKey(window, ia.key) == GLFW_PRESS) {
+                    ia.action();
+                }
             }
         }
 
 
         //Scene editing toggle 
         bool altPressed = glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS;
+        if (gameplayInputEnabled && !altPressed) {
+            for (int slotIndex = 0; slotIndex < static_cast<int>(inventorySystem.getPlayerInventory().getSlotCount()) && slotIndex < 9; ++slotIndex) {
+                if (glfwGetKey(window, GLFW_KEY_1 + slotIndex) == GLFW_PRESS) {
+                    inventorySystem.selectPlayerSlot(slotIndex);
+                }
+            }
+        }
+
         bool key1Pressed = glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS;
         if (altPressed && key1Pressed && !lastKey1State) {
             sceneEditingMode = !sceneEditingMode;
@@ -343,7 +378,7 @@ int main() {
         lastKeySPressed = altPressed && keySPressed;
 
         // Keep GLFW cursor mode aligned with edit/game mode.
-        int desiredCursorMode = sceneEditingMode ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
+        int desiredCursorMode = (sceneEditingMode || inventorySystem.isLockerOpen()) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
         int currentCursorMode = glfwGetInputMode(window, GLFW_CURSOR);
         if (currentCursorMode != desiredCursorMode) {
             glfwSetInputMode(window, GLFW_CURSOR, desiredCursorMode);
@@ -401,7 +436,7 @@ int main() {
         interactionPrompt.clear();
         interactTarget = nullptr;
 
-        if (!sceneEditingMode) {
+        if (gameplayInputEnabled) {
             Camera* activeCamera = scene->getActiveCamera();
             if (activeCamera) {
                 const float screenCenterX = screenWidth * 0.5f;
@@ -433,15 +468,20 @@ int main() {
         }
 
         bool keyEPressed = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS;
-        if (!sceneEditingMode && interactTarget && keyEPressed && !lastKeyEState) {
+        bool keyEscapePressed = glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
+        if (inventorySystem.isLockerOpen() && ((keyEPressed && !lastKeyEState) || (keyEscapePressed && !lastKeyEscapeState))) {
+            inventorySystem.closeLocker();
+        } else if (!sceneEditingMode && interactTarget && keyEPressed && !lastKeyEState) {
             const std::string tag = interactTarget->getTag();
             if (tag == "computer") {
                 ShowToast("Computer interaction not implemented yet.");
             } else if (tag == "locker") {
-                ShowToast("Locker interaction not implemented yet.");
+                inventorySystem.openLocker(interactTarget->getId());
+                ShowToast("Locker opened.");
             }
         }
         lastKeyEState = keyEPressed;
+        lastKeyEscapeState = keyEscapePressed;
 
         submarine.update(dt);
 
@@ -486,8 +526,41 @@ int main() {
         
         ShowEngineUI(scene, screenWidth, screenHeight, selectedMesh, sceneEditingMode, camera);
         RenderToast(screenWidth);
+        LockerUIAction inventoryBarAction;
         if (!sceneEditingMode) {
             RenderInteractionPrompt(screenWidth, screenHeight, interactionPrompt);
+            inventoryBarAction = RenderInventoryBar(screenWidth,
+                                                    screenHeight,
+                                                    inventorySystem.getPlayerInventory(),
+                                                    inventorySystem.getSelectedPlayerSlot(),
+                                                    inventorySystem.isLockerOpen());
+        }
+        if (inventoryBarAction.type == LockerUIActionType::MovePlayerSlotToLocker) {
+            const InventorySlot& movedSlot = inventorySystem.getPlayerInventory().getSlots()[inventoryBarAction.slotIndex];
+            const std::string itemName = GetInventorySlotName(movedSlot);
+            if (inventorySystem.movePlayerSlotToOpenLocker(inventoryBarAction.slotIndex)) {
+                ShowToast("Stored " + itemName + ".");
+            } else {
+                ShowToast("Locker is full.");
+            }
+        }
+        if (inventorySystem.isLockerOpen()) {
+            const InventoryContainer* openLockerInventory = inventorySystem.getOpenLockerInventory();
+            if (openLockerInventory) {
+                const LockerUIAction action = RenderLockerUI(screenWidth, screenHeight, *openLockerInventory);
+                if (action.type == LockerUIActionType::Close) {
+                    inventorySystem.closeLocker();
+                }
+                if (action.type == LockerUIActionType::MoveLockerSlotToPlayer) {
+                    const InventorySlot& movedSlot = openLockerInventory->getSlots()[action.slotIndex];
+                    const std::string itemName = GetInventorySlotName(movedSlot);
+                    if (inventorySystem.moveOpenLockerSlotToPlayer(action.slotIndex)) {
+                        ShowToast("Picked up " + itemName + ".");
+                    } else {
+                        ShowToast("Inventory is full.");
+                    }
+                }
+            }
         }
 
         // Render ImGui

@@ -4,6 +4,7 @@
     "objects": [
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -11,15 +12,31 @@
             ],
             "id": 10,
             "isParent": false,
+            "localPosition": [
+                0.2840968072414398,
+                -0.16411137580871582,
+                10.807411193847656
+            ],
+            "localRotation": [
+                -0.4953101873397827,
+                43.33491516113281,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "parent": -1,
             "parentId": -1,
             "position": [
-                0.14073894917964935,
+                0.2840968072414398,
                 -0.16411137580871582,
-                7.177642345428467
+                10.807411193847656
             ],
             "rotation": [
-                -0.14969408512115479,
-                25.16577911376953,
+                -0.4953101873397827,
+                43.33491516113281,
                 0.0
             ],
             "size": [
@@ -32,6 +49,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -39,6 +57,22 @@
             ],
             "id": 2,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                10.0,
+                0.0
+            ],
+            "localRotation": [
+                -1.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -60,6 +94,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 0.8899999856948853,
                 0.7689999938011169,
@@ -68,6 +103,22 @@
             "id": 3,
             "intensity": 2.0,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localRotation": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -89,6 +140,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -96,7 +148,23 @@
             ],
             "id": 4,
             "isParent": false,
+            "localPosition": [
+                1.0,
+                -1.2999999523162842,
+                -1.899999976158142
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/table.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 1.0,
@@ -119,6 +187,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -126,7 +195,23 @@
             ],
             "id": 5,
             "isParent": false,
+            "localPosition": [
+                1.0,
+                -0.20000000298023224,
+                -2.0999999046325684
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/computer.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 1.0,
@@ -149,6 +234,14 @@
         },
         {
             "active": true,
+            "childIds": [
+                7,
+                8,
+                9,
+                10,
+                11,
+                20
+            ],
             "color": [
                 1.0,
                 1.0,
@@ -156,7 +249,23 @@
             ],
             "id": 6,
             "isParent": true,
+            "localPosition": [
+                2.0,
+                -2.9000000953674316,
+                10.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/shelf.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 2.0,
@@ -179,6 +288,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -186,7 +296,23 @@
             ],
             "id": 7,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                0.40000009536743164,
+                -0.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/crate.obj",
+            "parent": 6,
             "parentId": 6,
             "position": [
                 2.0,
@@ -209,6 +335,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -216,7 +343,23 @@
             ],
             "id": 8,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                1.6000001430511475,
+                0.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/crate.obj",
+            "parent": 6,
             "parentId": 6,
             "position": [
                 2.0,
@@ -239,6 +382,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -246,7 +390,23 @@
             ],
             "id": 9,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                1.6000001430511475,
+                -0.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/crate.obj",
+            "parent": 6,
             "parentId": 6,
             "position": [
                 2.0,
@@ -269,6 +429,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -276,11 +437,27 @@
             ],
             "id": 10,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                2.8000001907348633,
+                0.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/crate.obj",
+            "parent": 6,
             "parentId": 6,
             "position": [
                 2.0,
-                -0.10000000149011612,
+                -0.09999990463256836,
                 11.0
             ],
             "rotation": [
@@ -299,6 +476,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -306,11 +484,27 @@
             ],
             "id": 11,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                2.8000001907348633,
+                -0.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/crate.obj",
+            "parent": 6,
             "parentId": 6,
             "position": [
                 2.0,
-                -0.10000000149011612,
+                -0.09999990463256836,
                 10.0
             ],
             "rotation": [
@@ -329,6 +523,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -336,8 +531,24 @@
             ],
             "id": 12,
             "isParent": false,
+            "localPosition": [
+                1.5,
+                -3.0,
+                0.0
+            ],
+            "localRotation": [
+                0.0,
+                45.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/stool_rough.png",
             "objPath": "assets/stool.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 1.5,
@@ -361,6 +572,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -368,9 +580,25 @@
             ],
             "id": 13,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                -3.0,
+                0.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -394,6 +622,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -401,9 +630,25 @@
             ],
             "id": 14,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                -3.0,
+                6.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -427,6 +672,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -434,9 +680,25 @@
             ],
             "id": 15,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                1.5,
+                0.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                180.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -460,6 +722,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -467,9 +730,25 @@
             ],
             "id": 16,
             "isParent": false,
+            "localPosition": [
+                3.0,
+                -0.75,
+                0.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "localSize": [
+                0.75,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 3.0,
@@ -493,6 +772,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -500,9 +780,25 @@
             ],
             "id": 17,
             "isParent": false,
+            "localPosition": [
+                -3.0,
+                -0.75,
+                0.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                -90.0
+            ],
+            "localSize": [
+                0.75,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 -3.0,
@@ -526,6 +822,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -533,9 +830,25 @@
             ],
             "id": 18,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                -0.75,
+                -3.0
+            ],
+            "localRotation": [
+                90.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                0.75
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -559,6 +872,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -566,8 +880,24 @@
             ],
             "id": 19,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                -3.0,
+                3.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "normalMap": "assets/door_frame_rough.png",
             "objPath": "assets/door_frame.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -591,6 +921,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -598,7 +929,23 @@
             ],
             "id": 20,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                0.40000009536743164,
+                0.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/crate.obj",
+            "parent": 6,
             "parentId": 6,
             "position": [
                 2.0,
@@ -621,6 +968,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -628,9 +976,25 @@
             ],
             "id": 21,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                1.5,
+                6.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                180.0
+            ],
+            "localSize": [
+                1.0,
+                6.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -654,6 +1018,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -661,9 +1026,25 @@
             ],
             "id": 22,
             "isParent": false,
+            "localPosition": [
+                3.0,
+                -0.75,
+                6.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "localSize": [
+                0.75,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 3.0,
@@ -687,6 +1068,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -694,9 +1076,25 @@
             ],
             "id": 23,
             "isParent": false,
+            "localPosition": [
+                -3.0,
+                -0.75,
+                6.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                -90.0
+            ],
+            "localSize": [
+                0.75,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 -3.0,
@@ -720,6 +1118,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -727,9 +1126,25 @@
             ],
             "id": 24,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                -0.75,
+                21.0
+            ],
+            "localRotation": [
+                -90.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                0.75
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -753,6 +1168,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -760,8 +1176,24 @@
             ],
             "id": 25,
             "isParent": false,
+            "localPosition": [
+                -3.0,
+                -2.9000000953674316,
+                12.779999732971191
+            ],
+            "localRotation": [
+                0.0,
+                90.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "normalMap": "assets/bed/bed_normal.png",
             "objPath": "assets/bed/bed.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 -3.0,
@@ -785,6 +1217,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -792,8 +1225,24 @@
             ],
             "id": 26,
             "isParent": false,
+            "localPosition": [
+                -1.0,
+                -3.0,
+                6.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/ladder/ladder_metal.png",
             "objPath": "assets/ladder/ladder.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 -1.0,
@@ -817,6 +1266,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -824,9 +1274,25 @@
             ],
             "id": 27,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                -3.0,
+                12.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -850,6 +1316,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -857,9 +1324,25 @@
             ],
             "id": 28,
             "isParent": false,
+            "localPosition": [
+                3.0,
+                -0.75,
+                12.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "localSize": [
+                0.75,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 3.0,
@@ -883,6 +1366,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -890,9 +1374,25 @@
             ],
             "id": 29,
             "isParent": false,
+            "localPosition": [
+                -3.0,
+                -0.75,
+                12.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                -90.0
+            ],
+            "localSize": [
+                0.75,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 -3.0,
@@ -916,6 +1416,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -923,8 +1424,24 @@
             ],
             "id": 30,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                -3.0,
+                15.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "normalMap": "assets/door_frame_rough.png",
             "objPath": "assets/door_frame.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -948,6 +1465,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 0.8880000114440918,
                 0.7680000066757202,
@@ -956,6 +1474,22 @@
             "id": 31,
             "intensity": 1.0,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                0.0,
+                12.0
+            ],
+            "localRotation": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -977,6 +1511,14 @@
         },
         {
             "active": true,
+            "childIds": [
+                33,
+                34,
+                35,
+                36,
+                37,
+                38
+            ],
             "color": [
                 1.0,
                 1.0,
@@ -984,7 +1526,23 @@
             ],
             "id": 32,
             "isParent": true,
+            "localPosition": [
+                2.0,
+                -2.9000000953674316,
+                13.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/shelf.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 2.0,
@@ -1007,6 +1565,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1014,11 +1573,27 @@
             ],
             "id": 33,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                2.8000001907348633,
+                0.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/crate.obj",
+            "parent": 32,
             "parentId": 32,
             "position": [
                 2.0,
-                -0.10000000149011612,
+                -0.09999990463256836,
                 14.0
             ],
             "rotation": [
@@ -1037,6 +1612,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1044,7 +1620,23 @@
             ],
             "id": 34,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                1.6000001430511475,
+                -0.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/crate.obj",
+            "parent": 32,
             "parentId": 32,
             "position": [
                 2.0,
@@ -1067,6 +1659,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1074,11 +1667,27 @@
             ],
             "id": 35,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                2.8000001907348633,
+                -0.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/crate.obj",
+            "parent": 32,
             "parentId": 32,
             "position": [
                 2.0,
-                -0.10000000149011612,
+                -0.09999990463256836,
                 13.0
             ],
             "rotation": [
@@ -1097,6 +1706,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1104,7 +1714,23 @@
             ],
             "id": 36,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                0.40000009536743164,
+                0.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/crate.obj",
+            "parent": 32,
             "parentId": 32,
             "position": [
                 2.0,
@@ -1127,6 +1753,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1134,7 +1761,23 @@
             ],
             "id": 37,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                1.6000001430511475,
+                0.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/crate.obj",
+            "parent": 32,
             "parentId": 32,
             "position": [
                 2.0,
@@ -1157,6 +1800,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1164,7 +1808,23 @@
             ],
             "id": 38,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                0.40000009536743164,
+                -0.5
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/crate.obj",
+            "parent": 32,
             "parentId": 32,
             "position": [
                 2.0,
@@ -1187,6 +1847,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1194,9 +1855,25 @@
             ],
             "id": 39,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                1.5,
+                12.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                180.0
+            ],
+            "localSize": [
+                1.0,
+                6.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -1220,6 +1897,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1227,9 +1905,25 @@
             ],
             "id": 40,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                -3.0,
+                18.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -1253,6 +1947,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1260,9 +1955,25 @@
             ],
             "id": 41,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                1.5,
+                18.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                180.0
+            ],
+            "localSize": [
+                1.0,
+                6.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -1286,6 +1997,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1293,9 +2005,25 @@
             ],
             "id": 42,
             "isParent": false,
+            "localPosition": [
+                3.0,
+                -0.75,
+                18.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "localSize": [
+                0.75,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 3.0,
@@ -1319,6 +2047,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1326,9 +2055,25 @@
             ],
             "id": 43,
             "isParent": false,
+            "localPosition": [
+                -3.0,
+                -0.75,
+                18.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                -90.0
+            ],
+            "localSize": [
+                0.75,
+                1.0,
+                1.0
+            ],
             "metalnessMap": "assets/floor_rough.png",
             "normalMap": "assets/floor_rough.png",
             "objPath": "assets/floor.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 -3.0,
@@ -1352,6 +2097,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1359,8 +2105,24 @@
             ],
             "id": 44,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                -3.0,
+                9.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "normalMap": "assets/door_frame_rough.png",
             "objPath": "assets/door_frame.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -1384,6 +2146,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 0.8880000114440918,
                 0.7680000066757202,
@@ -1392,6 +2155,22 @@
             "id": 45,
             "intensity": 2.0,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                0.0,
+                18.0
+            ],
+            "localRotation": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -1413,6 +2192,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1420,7 +2200,23 @@
             ],
             "id": 46,
             "isParent": false,
+            "localPosition": [
+                -2.0,
+                -3.0,
+                10.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/locker/locker_closed.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 -2.0,
@@ -1443,6 +2239,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1450,7 +2247,23 @@
             ],
             "id": 47,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                1.5,
+                6.0
+            ],
+            "localRotation": [
+                0.0,
+                0.0,
+                180.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/hatch/hatch.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -1473,6 +2286,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1480,7 +2294,23 @@
             ],
             "id": 48,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                1.5,
+                0.0
+            ],
+            "localRotation": [
+                180.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/CeilingLight/ceiling_light.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -1503,6 +2333,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1510,7 +2341,23 @@
             ],
             "id": 49,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                1.5,
+                12.0
+            ],
+            "localRotation": [
+                180.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/CeilingLight/ceiling_light.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -1533,6 +2380,7 @@
         },
         {
             "active": true,
+            "childIds": [],
             "color": [
                 1.0,
                 1.0,
@@ -1540,7 +2388,23 @@
             ],
             "id": 50,
             "isParent": false,
+            "localPosition": [
+                0.0,
+                1.5,
+                18.0
+            ],
+            "localRotation": [
+                180.0,
+                0.0,
+                0.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
             "objPath": "assets/CeilingLight/ceiling_light.obj",
+            "parent": -1,
             "parentId": -1,
             "position": [
                 0.0,
@@ -1560,6 +2424,59 @@
             "tag": "",
             "texture": "assets/CeilingLight/ceiling_light.png",
             "type": "mesh"
+        },
+        {
+            "active": true,
+            "childIds": [],
+            "color": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "cutoff": 22.5,
+            "direction": [
+                0.0,
+                -1.0,
+                0.0
+            ],
+            "id": 62,
+            "intensity": 3.0,
+            "isParent": false,
+            "localPosition": [
+                0.0,
+                2.0,
+                0.0
+            ],
+            "localRotation": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "localSize": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "parent": -1,
+            "parentId": -1,
+            "position": [
+                0.0,
+                2.0,
+                0.0
+            ],
+            "rotation": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "size": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "tag": "",
+            "type": "spotlight"
         }
-    ]
+    ],
+    "schemaVersion": 2
 }

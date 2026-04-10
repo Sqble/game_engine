@@ -1,4 +1,5 @@
 #include "engine_ui.h"
+#include "../game/inventory/item_definition.h"
 #include "../objmanager/objmanager.h"
 #include "../mesh/mesh.h"
 #include "../pointlight/pointlight.h"
@@ -19,6 +20,78 @@
 
 static std::string toastMessage;
 static std::chrono::steady_clock::time_point toastEndTime;
+
+static std::string GetInventorySlotLabel(const InventorySlot& slot) {
+    if (slot.isEmpty()) {
+        return "-";
+    }
+
+    const ItemDefinition* definition = GetItemDefinitionById(slot.itemId);
+    std::string label = definition && !definition->iconLabel.empty() ? definition->iconLabel : slot.itemId;
+    if (slot.count > 1) {
+        label += "\nx" + std::to_string(slot.count);
+    }
+
+    return label;
+}
+
+static std::string GetInventorySlotName(const InventorySlot& slot) {
+    if (slot.isEmpty()) {
+        return "Empty Slot";
+    }
+
+    const ItemDefinition* definition = GetItemDefinitionById(slot.itemId);
+    return definition ? definition->name : slot.itemId;
+}
+
+static void RenderInventorySlot(const char* id,
+                                const InventorySlot& slot,
+                                const ImVec2& slotSize,
+                                bool selected,
+                                bool useButton,
+                                bool* clicked = nullptr) {
+    if (clicked) {
+        *clicked = false;
+    }
+
+    ImGui::PushID(id);
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 10.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, selected ? 2.0f : 1.0f);
+
+    const ImVec4 filledColor = selected ? ImVec4(0.20f, 0.48f, 0.62f, 0.95f) : ImVec4(0.15f, 0.16f, 0.18f, 0.92f);
+    const ImVec4 emptyColor = selected ? ImVec4(0.16f, 0.27f, 0.34f, 0.92f) : ImVec4(0.09f, 0.10f, 0.12f, 0.85f);
+    const ImVec4 borderColor = selected ? ImVec4(0.52f, 0.86f, 0.98f, 1.0f) : ImVec4(0.28f, 0.31f, 0.36f, 0.9f);
+    const bool occupied = !slot.isEmpty();
+
+    ImGui::PushStyleColor(ImGuiCol_Button, occupied ? filledColor : emptyColor);
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, occupied ? ImVec4(0.24f, 0.55f, 0.71f, 1.0f) : ImVec4(0.14f, 0.16f, 0.20f, 0.9f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, occupied ? ImVec4(0.18f, 0.42f, 0.55f, 1.0f) : ImVec4(0.12f, 0.14f, 0.18f, 0.9f));
+    ImGui::PushStyleColor(ImGuiCol_Border, borderColor);
+
+    const std::string label = GetInventorySlotLabel(slot);
+
+    if (useButton) {
+        const bool pressed = ImGui::Button(label.c_str(), slotSize);
+        if (clicked) {
+            *clicked = pressed;
+        }
+    } else {
+        ImGui::Button(label.c_str(), slotSize);
+    }
+
+    if (occupied && ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::TextUnformatted(GetInventorySlotName(slot).c_str());
+        if (slot.count > 1) {
+            ImGui::Text("Count: %d", slot.count);
+        }
+        ImGui::EndTooltip();
+    }
+
+    ImGui::PopStyleColor(4);
+    ImGui::PopStyleVar(2);
+    ImGui::PopID();
+}
 
 void ShowToast(const std::string& message, float durationSeconds) {
     toastMessage = message;
@@ -57,7 +130,7 @@ void RenderInteractionPrompt(int screenWidth, int screenHeight, const std::strin
         return;
     }
 
-    ImGui::SetNextWindowPos(ImVec2(screenWidth * 0.5f, screenHeight - 32.0f), ImGuiCond_Always, ImVec2(0.5f, 1.0f));
+    ImGui::SetNextWindowPos(ImVec2(screenWidth * 0.5f, screenHeight - 112.0f), ImGuiCond_Always, ImVec2(0.5f, 1.0f));
     ImGui::SetNextWindowBgAlpha(0.8f);
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoSavedSettings |
@@ -69,6 +142,102 @@ void RenderInteractionPrompt(int screenWidth, int screenHeight, const std::strin
     ImGui::Begin("##InteractionPrompt", nullptr, flags);
     ImGui::TextUnformatted(prompt.c_str());
     ImGui::End();
+}
+
+LockerUIAction RenderInventoryBar(int screenWidth,
+                                  int screenHeight,
+                                  const InventoryContainer& inventory,
+                                  int selectedSlot,
+                                  bool allowTransfersToLocker) {
+    LockerUIAction action;
+    if (inventory.getSlots().empty()) {
+        return action;
+    }
+
+    const float windowHeight = 104.0f;
+    ImGui::SetNextWindowPos(ImVec2(screenWidth * 0.5f, screenHeight - 18.0f), ImGuiCond_Always, ImVec2(0.5f, 1.0f));
+    ImGui::SetNextWindowBgAlpha(0.0f);
+
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoSavedSettings |
+                             ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav |
+                             ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+                             ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_AlwaysAutoResize;
+    if (!allowTransfersToLocker) {
+        flags |= ImGuiWindowFlags_NoInputs;
+    }
+
+    ImGui::Begin("##PlayerInventoryBar", nullptr, flags);
+    ImGui::TextUnformatted(allowTransfersToLocker ? "Inventory - Click item to store" : "Inventory");
+    ImGui::Spacing();
+
+    const std::vector<InventorySlot>& slots = inventory.getSlots();
+    for (size_t i = 0; i < slots.size(); ++i) {
+        if (i > 0) {
+            ImGui::SameLine();
+        }
+
+        const std::string slotId = "hud_slot_" + std::to_string(i);
+        bool clicked = false;
+        RenderInventorySlot(slotId.c_str(), slots[i], ImVec2(74.0f, windowHeight - 34.0f), static_cast<int>(i) == selectedSlot, allowTransfersToLocker, &clicked);
+        if (clicked && !slots[i].isEmpty() && action.type == LockerUIActionType::None) {
+            action.type = LockerUIActionType::MovePlayerSlotToLocker;
+            action.slotIndex = static_cast<int>(i);
+        }
+    }
+
+    ImGui::End();
+    return action;
+}
+
+LockerUIAction RenderLockerUI(int screenWidth,
+                              int screenHeight,
+                              const InventoryContainer& lockerInventory) {
+    LockerUIAction action;
+    ImGui::SetNextWindowPos(ImVec2(screenWidth * 0.5f, screenHeight * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowSize(ImVec2(520.0f, 320.0f), ImGuiCond_Always);
+    ImGui::SetNextWindowBgAlpha(0.96f);
+
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings;
+    bool lockerOpen = true;
+    if (!ImGui::Begin("Locker", &lockerOpen, flags)) {
+        ImGui::End();
+        if (!lockerOpen) {
+            action.type = LockerUIActionType::Close;
+        }
+        return action;
+    }
+
+    ImGui::TextUnformatted("Click an item to move it into your inventory.");
+    ImGui::SameLine();
+    ImGui::TextDisabled("Press E or Esc to close");
+    ImGui::Spacing();
+
+    ImGui::BeginChild("##LockerInventory", ImVec2(0, 0), true);
+    ImGui::TextUnformatted("Locker Contents");
+    ImGui::Separator();
+    const std::vector<InventorySlot>& lockerSlots = lockerInventory.getSlots();
+    for (size_t i = 0; i < lockerSlots.size(); ++i) {
+        const std::string slotId = "locker_slot_" + std::to_string(i);
+        bool clicked = false;
+        RenderInventorySlot(slotId.c_str(), lockerSlots[i], ImVec2(100.0f, 82.0f), false, true, &clicked);
+        if (clicked && !lockerSlots[i].isEmpty() && action.type == LockerUIActionType::None) {
+            action.type = LockerUIActionType::MoveLockerSlotToPlayer;
+            action.slotIndex = static_cast<int>(i);
+        }
+
+        if ((i + 1) % 3 != 0 && i + 1 < lockerSlots.size()) {
+            ImGui::SameLine();
+        }
+    }
+
+    ImGui::EndChild();
+    ImGui::End();
+
+    if (!lockerOpen && action.type == LockerUIActionType::None) {
+        action.type = LockerUIActionType::Close;
+    }
+
+    return action;
 }
 
 static UndoManager undoManager;
