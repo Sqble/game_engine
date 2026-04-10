@@ -84,16 +84,21 @@ class Camera : public SceneObject {
 
         void move(const glm::vec2& movement) {
             glm::vec3 forwardDir = getForwardDirection();
-            glm::vec3 rightDir = glm::normalize(glm::cross(forwardDir, glm::vec3(0.f, 1.f, 0.f)));
+            glm::vec3 rightDir = glm::cross(forwardDir, glm::vec3(0.f, 1.f, 0.f));
+            if (glm::length(rightDir) < 0.0001f) {
+                const float yaw = getRotation().y;
+                rightDir = glm::vec3(std::cos(yaw), 0.0f, std::sin(yaw));
+            } else {
+                rightDir = glm::normalize(rightDir);
+            }
             glm::vec3 newPos = getPosition() + forwardDir * movement.x + rightDir * movement.y;
             setPosition(newPos);
         }
 
         // Moves camera in the horizontal plane relative to its view direction: x=forward/backward, y=left/right
         void move2D(const glm::vec2& movement) {
-            glm::vec3 forwardDir = getForwardDirection();
-            forwardDir.y = 0; // Project onto horizontal plane
-            forwardDir = glm::normalize(forwardDir);
+            const float yaw = getRotation().y;
+            glm::vec3 forwardDir(std::sin(yaw), 0.0f, -std::cos(yaw));
             glm::vec3 rightDir = glm::normalize(glm::cross(forwardDir, glm::vec3(0.f, 1.f, 0.f)));
             glm::vec3 newPos = getPosition() + forwardDir * movement.x + rightDir * movement.y;
             setPosition(newPos);

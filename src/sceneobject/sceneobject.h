@@ -68,7 +68,7 @@ public:
     SceneObject* getParent() const { return parent_; }
     const std::vector<SceneObject*>& getChildren() const { return children_; }
 
-    static int nextId() { return sceneObjectIdCounter + 1; }
+    static int nextId() { return sceneObjectIdCounter; }
     static int assignNextId();
     static void setIDCounter(int id) { sceneObjectIdCounter = id; }
 

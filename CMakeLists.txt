@@ -41,6 +41,8 @@ target_include_directories(game PRIVATE ${EPOXY_INCLUDE_DIRS})
 if(BUILD_TESTING)
     add_executable(engine_tests
         tests/test_main.cpp
+        src/file_manager/file_manager.cpp
+        src/raycast/raycast.cpp
         src/sceneobject/sceneobject.cpp
         src/game/inventory/item_definition.cpp
         src/game/inventory/inventory_container.cpp
@@ -51,9 +53,13 @@ if(BUILD_TESTING)
     target_include_directories(engine_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
 
     set(ENGINE_TEST_CASES
-        "SceneObject suite"
+        "AABBAndFrustum suite"
+        "CameraAndRaycast suite"
+        "FileItemAndLight suite"
         "InventoryContainer suite"
+        "SceneObject suite"
         "InventorySystem suite"
+        "UndoManager suite"
     )
 
     foreach(test_case IN LISTS ENGINE_TEST_CASES)
