@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 #include "../includes/json.hpp"
 
 using json = nlohmann::json;
@@ -47,7 +48,7 @@ public:
 
     bool saveToFile(const std::string& filename) const;
     bool loadFromFile(const std::string& filename, int screenWidth, int screenHeight);
-    Mesh* getGizmo() const { return gizmo_; }
+    Mesh* getGizmo() const { return gizmo_.get(); }
     void generateGizmo();
     void remove(SceneObject* object);
 
@@ -63,10 +64,12 @@ public:
 private:
     std::string name_;
     Camera* activeCamera_;
-    std::vector<SceneObject*> objects_;
+    std::vector<std::unique_ptr<SceneObject>> objects_;
     std::vector<LightObject*> lightObjects_;
     std::vector<Camera*> cameras_;
-    Mesh* gizmo_ = nullptr;
+    std::unique_ptr<Mesh> gizmo_;
+
+    void clearObjects();
 };
 
 json serializeObject(const SceneObject* obj);

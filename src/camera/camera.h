@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include <epoxy/gl.h>
 #include <GLFW/glfw3.h>
@@ -16,8 +17,9 @@
 
 class Camera : public SceneObject {
     public:
-        Camera(int screenWidth, int screenHeight, glm::vec3 position={0.f,0.f,0.f}, glm::vec3 looking={0.f,0.f,-1.f})
-        : SceneObject(position, glm::vec3(1), glm::vec3(1), looking),
+        // Camera rotation is stored as Euler pitch/yaw/roll in radians.
+        Camera(int screenWidth, int screenHeight, glm::vec3 position={0.f,0.f,0.f}, glm::vec3 rotationRadians={0.f,0.f,0.f})
+        : SceneObject(position, glm::vec3(1), glm::vec3(1), rotationRadians),
         screenWidth_(screenWidth), screenHeight_(screenHeight) {
             recalculateMatrix();
 
@@ -29,23 +31,34 @@ class Camera : public SceneObject {
             );
         }
 
-        void setPosition(glm::vec3 position) {
-            position_ = position;
+        void setPosition(const glm::vec3& position) override {
+            SceneObject::setPosition(position);
             recalculateMatrix();
         }
 
         void move(glm::vec3 movementVector) { 
-            setPosition(position_ + movementVector);
+            setPosition(getPosition() + movementVector);
         }
 
-        void setRotation(glm::vec3 looking) {
-            rotation_ = looking;
+        void setRotation(const glm::vec3& rotationRadians) override {
+            SceneObject::setRotation(rotationRadians);
             recalculateMatrix();
         }
 
-        void lookAt(const glm::vec3& target) { // untested
-            rotation_ = glm::normalize(target - position_);
-            recalculateMatrix();
+        void setLookDirection(const glm::vec3& direction) {
+            const float length = glm::length(direction);
+            if (length < 0.0001f) {
+                return;
+            }
+
+            const glm::vec3 normalized = glm::normalize(direction);
+            const float pitch = std::asin(glm::clamp(normalized.y, -1.0f, 1.0f));
+            const float yaw = std::atan2(normalized.x, -normalized.z);
+            setRotation(glm::vec3(pitch, yaw, 0.0f));
+        }
+
+        void lookAt(const glm::vec3& target) {
+            setLookDirection(target - getPosition());
         }
 
         glm::mat4 getViewMatrix() const {
@@ -57,21 +70,22 @@ class Camera : public SceneObject {
         }
 
         void rotateViewDirection(const glm::vec2& rotationDelta) {
+            glm::vec3 looking = getRotation();
             // Yaw (around Y axis)
-            rotation_.y -= rotationDelta.y;
+            looking.y -= rotationDelta.y;
             // Pitch (around X axis)
-            rotation_.x += rotationDelta.x;
+            looking.x += rotationDelta.x;
             // Clamp pitch to avoid flipping
             const float pitchLimit = (float)M_PI_2 - 0.01f; // ~89.4 degrees
-            if (rotation_.x > pitchLimit) rotation_.x = pitchLimit;
-            if (rotation_.x < -pitchLimit) rotation_.x = -pitchLimit;
-            recalculateMatrix();
+            if (looking.x > pitchLimit) looking.x = pitchLimit;
+            if (looking.x < -pitchLimit) looking.x = -pitchLimit;
+            setRotation(looking);
         }
 
         void move(const glm::vec2& movement) {
             glm::vec3 forwardDir = getForwardDirection();
             glm::vec3 rightDir = glm::normalize(glm::cross(forwardDir, glm::vec3(0.f, 1.f, 0.f)));
-            glm::vec3 newPos = position_ + forwardDir * movement.x + rightDir * movement.y;
+            glm::vec3 newPos = getPosition() + forwardDir * movement.x + rightDir * movement.y;
             setPosition(newPos);
         }
 
@@ -81,21 +95,20 @@ class Camera : public SceneObject {
             forwardDir.y = 0; // Project onto horizontal plane
             forwardDir = glm::normalize(forwardDir);
             glm::vec3 rightDir = glm::normalize(glm::cross(forwardDir, glm::vec3(0.f, 1.f, 0.f)));
-            glm::vec3 newPos = position_ + forwardDir * movement.x + rightDir * movement.y;
+            glm::vec3 newPos = getPosition() + forwardDir * movement.x + rightDir * movement.y;
             setPosition(newPos);
         }
 
-        glm::vec3 getPosition() const { return position_; }
-
         void moveVertical(float amount) {
-            position_.y += amount;
-            recalculateMatrix();
+            glm::vec3 position = getPosition();
+            position.y += amount;
+            setPosition(position);
         }
 
         glm::vec3 getForwardDirection() const {
-            // Calculate direction from Euler angles (rotation_)
-            float pitch = rotation_.x;
-            float yaw = rotation_.y;
+            const glm::vec3 rotation = getRotation();
+            float pitch = rotation.x;
+            float yaw = rotation.y;
             glm::vec3 direction;
             direction.x = cos(pitch) * sin(yaw);
             direction.y = sin(pitch);
@@ -123,8 +136,8 @@ class Camera : public SceneObject {
         void recalculateMatrix() {
             glm::vec3 forward = getForwardDirection();
             view_ = glm::lookAt(
-                position_,                       // Camera position
-                position_ + forward, // Target position (camera looks here)
+                getPosition(),
+                getPosition() + forward,
                 glm::vec3(0.f, 1.f, 0.f)              // Up vector (positive Y-axis)
             );
         }

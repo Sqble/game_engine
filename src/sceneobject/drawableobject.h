@@ -15,11 +15,13 @@ class DrawableObject : public SceneObject {
                 glGenVertexArrays(1, &VAO);
                 glGenBuffers(1, &VBO);
                 glGenBuffers(1, &EBO);
+                updateModelMatrix();
             }
     
         void draw(Shader& shader) override {
-        
-            if (!isActive_) return;
+            if (!this->isEffectivelyActive()) return;
+
+            updateModelMatrix();
             
             shader.setMat4("u_model", model_);
             shader.setVec3("meshColor", color_);
@@ -34,25 +36,22 @@ class DrawableObject : public SceneObject {
             glDeleteBuffers(1, &EBO);
         }
 
-        void setPosition(const glm::vec3& position) {
-            //model_ = glm::translate(glm::mat4(1.0f), position);
-            position_ = position;
+        void setPosition(const glm::vec3& position) override {
+            SceneObject::setPosition(position);
             updateModelMatrix();
-
         }
 
         void move(const glm::vec3& movementVector) {
-            setPosition(position_ + movementVector);
+            setPosition(getPosition() + movementVector);
         }
 
-        void setSize(const glm::vec3& size) { //tested 
-            size_ = size;
+        void setSize(const glm::vec3& size) override {
+            SceneObject::setSize(size);
             updateModelMatrix();
         }
 
-        void setRotation(const glm::vec3& rotation) {
-            //std::cout << "rotation being set to: " << rotation.x << ", " << rotation.y << ", " << rotation.z << std::endl;
-            rotation_ = rotation;
+        void setRotation(const glm::vec3& rotation) override {
+            SceneObject::setRotation(rotation);
             updateModelMatrix();
         }
 
@@ -70,16 +69,20 @@ class DrawableObject : public SceneObject {
 
     protected:
         unsigned int VAO, VBO, EBO;
-        glm::mat4 model_;
+        mutable glm::mat4 model_;
         std::vector<float> vertices_;
         std::vector<unsigned int> indices_;
 
-        void updateModelMatrix() {
-            model_ = glm::translate(glm::mat4(1.0f), position_);
-            model_ = glm::rotate(model_, glm::radians(rotation_.x), glm::vec3(1,0,0)); // pitch
-            model_ = glm::rotate(model_, glm::radians(rotation_.y), glm::vec3(0,1,0)); // yaw
-            model_ = glm::rotate(model_, glm::radians(rotation_.z), glm::vec3(0,0,1)); // roll
-            model_ = glm::scale(model_, size_);
+        void updateModelMatrix() const {
+            const glm::vec3 position = getPosition();
+            const glm::vec3 rotation = getRotation();
+            const glm::vec3 size = getSize();
+
+            model_ = glm::translate(glm::mat4(1.0f), position);
+            model_ = glm::rotate(model_, glm::radians(rotation.x), glm::vec3(1,0,0));
+            model_ = glm::rotate(model_, glm::radians(rotation.y), glm::vec3(0,1,0));
+            model_ = glm::rotate(model_, glm::radians(rotation.z), glm::vec3(0,0,1));
+            model_ = glm::scale(model_, size);
         }
 
         void updateVboVertexData() {

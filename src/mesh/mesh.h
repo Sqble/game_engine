@@ -23,7 +23,10 @@ public:
     bool intersectRay(const glm::vec3& rayOrigin, const glm::vec3& rayDir, float& hitDist) const override;
     bool isMesh() const override { return true; }
 
-    AABB getWorldAABB() const { return localAABB_.transformed(model_); }
+    AABB getWorldAABB() const {
+        updateModelMatrix();
+        return localAABB_.transformed(model_);
+    }
 
     void computeBoundingBox() {
     // Compute bounding box

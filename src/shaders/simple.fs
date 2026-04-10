@@ -38,6 +38,8 @@ uniform vec3 viewPos; //viewport position
 uniform int numPointLights; //number of point lights in scene
 uniform int numSpotLights; //number of spot lights in scene
 uniform vec3 globalAmbient; // Global ambient light color
+uniform int shadowedLightType;
+uniform int shadowedLightIndex;
 
 // Shadow mapping
 uniform sampler2D shadowMap;
@@ -163,11 +165,13 @@ void main() {
 
     // Point lights
     for (int i = 0; i < numPointLights; ++i) {
-        result += calcLight(lights[i].position, lights[i].color, norm, viewDir, albedo, rough, metal, shadow, FragPos, false, vec3(0), 0.0);
+        float pointShadow = (shadowedLightType == 1 && shadowedLightIndex == i) ? shadow : 0.0;
+        result += calcLight(lights[i].position, lights[i].color, norm, viewDir, albedo, rough, metal, pointShadow, FragPos, false, vec3(0), 0.0);
     }
     // Spot lights
     for (int i = 0; i < numSpotLights; ++i) {
-        result += calcLight(spotLights[i].position, spotLights[i].color, norm, viewDir, albedo, rough, metal, shadow, FragPos, true, spotLights[i].direction, spotLights[i].cutoff);
+        float spotShadow = (shadowedLightType == 2 && shadowedLightIndex == i) ? shadow : 0.0;
+        result += calcLight(spotLights[i].position, spotLights[i].color, norm, viewDir, albedo, rough, metal, spotShadow, FragPos, true, spotLights[i].direction, spotLights[i].cutoff);
     }
     // Volumetric fog calculation
     float distance = length(viewPos - FragPos);

@@ -4,17 +4,11 @@ todo list for my game engine:
 Working On: 
 ========
 
-Spotlight duplication and properties
-Cameras in scene view list with their properties
-Shadowmap support for spotlights
 Fog settings stored in scene, saved and loaded, and editable in scene editing mode 
 
 =============
 Tickets:
 =============
-
-1. looking/rotation confusion in camera constructor
-looking at a location vs xyz rotation
 
 =======
 ICEBOX:

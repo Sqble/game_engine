@@ -53,6 +53,62 @@ void RenderToast(int screenWidth) {
 
 static UndoManager undoManager;
 
+static void RestoreHierarchyFromState(Scene* scene, SceneObject* obj, const json& state) {
+    if (!scene || !obj) {
+        return;
+    }
+
+    const int parentId = state.contains("parent") ? state.value("parent", -1) : state.value("parentId", -1);
+    if (parentId != -1) {
+        SceneObject* parent = scene->getObjectWithId(parentId);
+        if (parent) {
+            obj->setParent(parent, true);
+        }
+    }
+
+    if (state.contains("childIds")) {
+        for (const auto& childIdValue : state["childIds"]) {
+            SceneObject* child = scene->getObjectWithId(childIdValue.get<int>());
+            if (child) {
+                child->setParent(obj, true);
+            }
+        }
+    }
+}
+
+static void ApplySerializedState(Scene* scene, SceneObject* obj, const json& state, int screenWidth, int screenHeight) {
+    if (!scene || !obj) {
+        return;
+    }
+
+    SceneObject* newState = deserializeObject(state, screenWidth, screenHeight);
+    if (!newState) {
+        return;
+    }
+
+    obj->setPosition(newState->getPosition());
+    obj->setRotation(newState->getRotation());
+    obj->setSize(newState->getSize());
+    obj->setColor(newState->getColor());
+    obj->setActive(newState->isActive());
+
+    if (auto light = dynamic_cast<LightObject*>(obj)) {
+        if (auto newLight = dynamic_cast<LightObject*>(newState)) {
+            light->setIntensity(newLight->getIntensity());
+        }
+    }
+
+    if (auto spotLight = dynamic_cast<SpotLight*>(obj)) {
+        if (auto newSpotLight = dynamic_cast<SpotLight*>(newState)) {
+            spotLight->setDirection(newSpotLight->getDirection());
+            spotLight->setCutoff(newSpotLight->getCutoff());
+        }
+    }
+
+    RestoreHierarchyFromState(scene, obj, state);
+    delete newState;
+}
+
 void ShowEngineUI(Scene* scene, int screenWidth, int screenHeight, SceneObject*& selectedMesh, bool& sceneEditingMode, Camera*& camera) {
 
     // Handle Undo/Redo shortcuts (Ctrl+Z, Ctrl+Shift+Z)
@@ -78,22 +134,15 @@ void ShowEngineUI(Scene* scene, int screenWidth, int screenHeight, SceneObject*&
             SceneObject* obj = deserializeObject(action.objectStateBefore, screenWidth, screenHeight);
             if (obj) {
                 scene->add(obj);
+                RestoreHierarchyFromState(scene, obj, action.objectStateBefore);
                 ShowToast("Restored deleted object with ID: " + std::to_string(action.objectId));
             }
         }
         if (action.type == UndoManager::Action::Transform) { //to undo transform we restore the previous state
             SceneObject* obj = scene->getObjectWithId(action.objectId);
             if (obj) {
-                SceneObject* newState = deserializeObject(action.objectStateBefore, screenWidth, screenHeight);
-                if (newState) {
-                    obj->setPosition(newState->getPosition());
-                    obj->setRotation(newState->getRotation());
-                    obj->setSize(newState->getSize());
-                    obj->setColor(newState->getColor());
-                    obj->setActive(newState->isActive());
-                    ShowToast("Reverted transform of object with ID: " + std::to_string(action.objectId));
-                    delete newState; //clean up
-                }
+                ApplySerializedState(scene, obj, action.objectStateBefore, screenWidth, screenHeight);
+                ShowToast("Reverted transform of object with ID: " + std::to_string(action.objectId));
             }
         }
     }
@@ -107,6 +156,7 @@ void ShowEngineUI(Scene* scene, int screenWidth, int screenHeight, SceneObject*&
             SceneObject* obj = deserializeObject(action.objectStateAfter, screenWidth, screenHeight);
             if (obj) {
                 scene->add(obj);
+                RestoreHierarchyFromState(scene, obj, action.objectStateAfter);
                 ShowToast("Re-duplicated object with ID: " + std::to_string(action.objectId));
             }
         }
@@ -114,6 +164,7 @@ void ShowEngineUI(Scene* scene, int screenWidth, int screenHeight, SceneObject*&
             SceneObject* obj = deserializeObject(action.objectStateAfter, screenWidth, screenHeight);
             if (obj) {
                 scene->add(obj);
+                RestoreHierarchyFromState(scene, obj, action.objectStateAfter);
                 ShowToast("Re-created object with ID: " + std::to_string(action.objectId));
             }
         }
@@ -124,16 +175,8 @@ void ShowEngineUI(Scene* scene, int screenWidth, int screenHeight, SceneObject*&
         if (action.type == UndoManager::Action::Transform) { //to redo transform we restore the new state
             SceneObject* obj = scene->getObjectWithId(action.objectId);
             if (obj) {
-                SceneObject* newState = deserializeObject(action.objectStateAfter, screenWidth, screenHeight);
-                if (newState) {
-                    obj->setPosition(newState->getPosition());
-                    obj->setRotation(newState->getRotation());
-                    obj->setSize(newState->getSize());
-                    obj->setColor(newState->getColor());
-                    obj->setActive(newState->isActive());
-                    ShowToast("Re-applied transform of object with ID: " + std::to_string(action.objectId));
-                    delete newState; //clean up
-                }
+                ApplySerializedState(scene, obj, action.objectStateAfter, screenWidth, screenHeight);
+                ShowToast("Re-applied transform of object with ID: " + std::to_string(action.objectId));
             }
         }
     }
@@ -228,8 +271,10 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
             static glm::vec3 editScale;
             static glm::vec3 editRot;
             static glm::vec3 editColor;
+            static glm::vec3 editDirection;
             static bool editActive;
             static float editIntensity;
+            static float editCutoff;
             static SceneObject* lastMesh = nullptr;
 
             // If a new mesh is selected, update edit values to match its properties
@@ -249,6 +294,16 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                     editColor = light->getColor();
                     editActive = light->isActive();
                     editIntensity = light->getIntensity();
+                    if (selectedMesh->isSpotLight()) {
+                        SpotLight* spotLight = static_cast<SpotLight*>(selectedMesh);
+                        editDirection = spotLight->getDirection();
+                        editCutoff = spotLight->getCutoff();
+                    }
+                } else if (selectedMesh->isCamera()) {
+                    Camera* selectedCamera = static_cast<Camera*>(selectedMesh);
+                    editPos = selectedCamera->getPosition();
+                    editRot = selectedCamera->getRotation();
+                    editActive = selectedCamera->isActive();
                 }
                 lastMesh = selectedMesh;
             }
@@ -302,7 +357,7 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                 }
             // --- Undo for PointLight ---
             } else if (selectedMesh->isLight()) {
-                ImGui::Text("Selected Light Properties:");
+                ImGui::Text(selectedMesh->isSpotLight() ? "Selected Spotlight Properties:" : "Selected Light Properties:");
                 PointLight* light = static_cast<PointLight*>(selectedMesh);
                 json beforeState, afterState;
                 int objId = light->getId() ? light->getId() : 0;
@@ -335,6 +390,62 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                     afterState = serializeObject(light);
                     undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
                 }
+                if (selectedMesh->isSpotLight()) {
+                    SpotLight* spotLight = static_cast<SpotLight*>(selectedMesh);
+                    bool dirChanged = ImGui::InputFloat3("Direction", &editDirection.x, "%.3f");
+                    if (dirChanged && editDirection != spotLight->getDirection()) {
+                        beforeState = serializeObject(spotLight);
+                        spotLight->setDirection(editDirection);
+                        editDirection = spotLight->getDirection();
+                        afterState = serializeObject(spotLight);
+                        undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
+                    }
+
+                    bool cutoffChanged = ImGui::InputFloat("Cutoff (deg)", &editCutoff, 0.5f, 2.0f, "%.2f");
+                    if (cutoffChanged && editCutoff != spotLight->getCutoff()) {
+                        beforeState = serializeObject(spotLight);
+                        spotLight->setCutoff(editCutoff);
+                        afterState = serializeObject(spotLight);
+                        undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
+                    }
+                }
+            } else if (selectedMesh->isCamera()) {
+                ImGui::Text("Selected Camera Properties:");
+                Camera* selectedCamera = static_cast<Camera*>(selectedMesh);
+                json beforeState, afterState;
+                int objId = selectedCamera->getId() ? selectedCamera->getId() : 0;
+
+                if (scene->getActiveCamera() == selectedCamera) {
+                    ImGui::Text("Scene Active Camera");
+                } else if (ImGui::Button("Make Active Camera")) {
+                    scene->setActiveCamera(selectedCamera);
+                    camera = selectedCamera;
+                }
+
+                bool posChanged = ImGui::InputFloat3("Position", &editPos.x, "%.3f");
+                if (posChanged && editPos != selectedCamera->getPosition()) {
+                    beforeState = serializeObject(selectedCamera);
+                    selectedCamera->setPosition(editPos);
+                    scene->getGizmo()->setPosition(editPos);
+                    afterState = serializeObject(selectedCamera);
+                    undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
+                }
+
+                bool rotChanged = ImGui::InputFloat3("Rotation (rad)", &editRot.x, "%.3f");
+                if (rotChanged && editRot != selectedCamera->getRotation()) {
+                    beforeState = serializeObject(selectedCamera);
+                    selectedCamera->setRotation(editRot);
+                    afterState = serializeObject(selectedCamera);
+                    undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
+                }
+
+                bool activeChanged = ImGui::Checkbox("Active", &editActive);
+                if (activeChanged && editActive != selectedCamera->isActive()) {
+                    beforeState = serializeObject(selectedCamera);
+                    selectedCamera->setActive(editActive);
+                    afterState = serializeObject(selectedCamera);
+                    undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
+                }
             }
 
             // --- Undo for Delete ---
@@ -343,23 +454,7 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                     json beforeState = serializeObject(selectedMesh);
                     int objId = selectedMesh->getId() ? selectedMesh->getId() : 0;
 
-                    int parentId = selectedMesh->getParentId();
-                    // remove child from parents
-                    if (parentId != -1) {
-                        SceneObject* parentObject = scene->getObjectWithId(parentId);
-                        parentObject->removeChild(selectedMesh);
-                    }
-                    // If the selected mesh is a parent, its children should no longer be children
-                    if (selectedMesh->isParent()) {
-                        auto children = static_cast<ParentObject<SceneObject>*>(selectedMesh)->getChildren();
-                        for (auto* child : children) {
-                            child->setParentId(-1);
-                            child->isChild_ = false;
-                        }
-                    }
-
                     scene->remove(selectedMesh);
-                    //delete selectedMesh;
                     undoManager.pushAction({UndoManager::Action::Delete, beforeState, "", objId});
                     selectedMesh = nullptr;
                     lastMesh = nullptr;
@@ -383,18 +478,51 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                     );
                     newMesh->setColor(mesh->getColor());
                     scene->add(newMesh);
+                    if (objToDuplicate->getParent()) {
+                        newMesh->setParent(objToDuplicate->getParent(), true);
+                    }
                     // Push create action
                     undoManager.pushAction({UndoManager::Action::Duplicate, "", serializeObject(newMesh), newMesh->getId() ? newMesh->getId() : 0});
                 } else if (objToDuplicate->isLight()) {
                     PointLight* light = static_cast<PointLight*>(objToDuplicate);
-                    PointLight* newLight = new PointLight(
-                        light->getPosition() + glm::vec3(1,0,0), // Offset position
-                        light->getColor(),
-                        light->getIntensity(),
-                        light->isActive()
-                    );
+                    LightObject* newLight = nullptr;
+                    if (objToDuplicate->isSpotLight()) {
+                        SpotLight* spotLight = static_cast<SpotLight*>(objToDuplicate);
+                        newLight = new SpotLight(
+                            spotLight->getPosition() + glm::vec3(1,0,0),
+                            spotLight->getDirection(),
+                            spotLight->getColor(),
+                            spotLight->getIntensity(),
+                            spotLight->getCutoff(),
+                            spotLight->isActive()
+                        );
+                    } else {
+                        newLight = new PointLight(
+                            light->getPosition() + glm::vec3(1,0,0),
+                            light->getColor(),
+                            light->getIntensity(),
+                            light->isActive()
+                        );
+                    }
                     scene->add(newLight);
+                    if (objToDuplicate->getParent()) {
+                        newLight->setParent(objToDuplicate->getParent(), true);
+                    }
                     undoManager.pushAction({UndoManager::Action::Duplicate, "", serializeObject(newLight), newLight->getId() ? newLight->getId() : 0});
+                } else if (objToDuplicate->isCamera()) {
+                    Camera* sourceCamera = static_cast<Camera*>(objToDuplicate);
+                    Camera* newCamera = new Camera(
+                        screenWidth,
+                        screenHeight,
+                        sourceCamera->getPosition() + glm::vec3(1,0,0),
+                        sourceCamera->getRotation()
+                    );
+                    newCamera->setActive(sourceCamera->isActive());
+                    scene->add(newCamera);
+                    if (objToDuplicate->getParent()) {
+                        newCamera->setParent(objToDuplicate->getParent(), true);
+                    }
+                    undoManager.pushAction({UndoManager::Action::Duplicate, "", serializeObject(newCamera), newCamera->getId() ? newCamera->getId() : 0});
                 }
             }
         } else {
@@ -414,7 +542,12 @@ static void ShowSceneObjectTree(SceneObject* obj, SceneObject*& selectedMesh, Sc
     if (!tag.empty()) {
         displayName = tag;
     } else {
-        displayName = obj->isMesh() ? "Mesh" : obj->isLight() ? "Light" : obj->isParent() ? "Parent" : "Object";
+        displayName = obj->isMesh() ? "Mesh" :
+                     obj->isCamera() ? "Camera" :
+                     obj->isSpotLight() ? "SpotLight" :
+                     obj->isLight() ? "Light" :
+                     obj->isCube() ? "Cube" :
+                     obj->isPlane() ? "Plane" : "Object";
     }
     char label[128];
     snprintf(label, sizeof(label), "[%s] (%.2f, %.2f, %.2f)##node%d", displayName.c_str(), pos.x, pos.y, pos.z, nodeIdx++);
@@ -423,7 +556,7 @@ static void ShowSceneObjectTree(SceneObject* obj, SceneObject*& selectedMesh, Sc
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
     if (isSelected) flags |= ImGuiTreeNodeFlags_Selected;
 
-    bool isParent = obj->isParent();
+    bool isParent = !obj->getChildren().empty();
     bool open = false;
     if (isParent) {
         open = ImGui::TreeNodeEx(label, flags);
@@ -442,16 +575,8 @@ static void ShowSceneObjectTree(SceneObject* obj, SceneObject*& selectedMesh, Sc
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCENE_OBJECT_PTR")) {
             SceneObject* droppedObj = *(SceneObject**)payload->Data;
-            // Prevent self-parenting and circular parenting
-            if (droppedObj != obj && !droppedObj->isParent_ && !droppedObj->isChild_) {
-                // Remove from previous parent if any
-                int prevParentId = droppedObj->getParentId();
-                if (prevParentId != -1) {
-                    SceneObject* prevParent = scene->getObjectWithId(prevParentId);
-                    if (prevParent) prevParent->removeChild(droppedObj);
-                }
-                // Add as child
-                obj->addChild(droppedObj);
+            if (droppedObj != obj) {
+                obj->addChild(droppedObj, true);
             }
         }
         ImGui::EndDragDropTarget();
@@ -462,14 +587,9 @@ static void ShowSceneObjectTree(SceneObject* obj, SceneObject*& selectedMesh, Sc
         scene->getGizmo()->setPosition(selectedMesh->getPosition());
     }
     if (isParent && open) {
-        // Recursively show children
-        const auto* parentObj = obj;
-        // Only call getChildren if isParent is true
-        if (parentObj->isParent()) {
-            const auto& children = static_cast<const ParentObject<SceneObject>*>(parentObj)->getChildren();
-            for (auto* child : children) {
-                ShowSceneObjectTree(child, selectedMesh, scene, nodeIdx);
-            }
+        const auto& children = obj->getChildren();
+        for (auto* child : children) {
+            ShowSceneObjectTree(child, selectedMesh, scene, nodeIdx);
         }
         ImGui::TreePop();
     }
@@ -480,14 +600,25 @@ static void ShowSceneViewWindow(Scene* scene, SceneObject*& selectedMesh, bool s
     ImGui::Begin("Scene View");
     ImGui::Text("Objects in Scene (Tree):");
     int nodeIdx = 0;
-    // Show all top-level meshes
     for (auto mesh : scene->getMeshes()) {
-        if (mesh->isChild_) continue; // Skip children, they will be shown under parents
+        if (mesh->isChild()) continue;
         ShowSceneObjectTree(mesh, selectedMesh, scene, nodeIdx);
     }
-    // Show all top-level lights
     for (auto light : scene->getLights()) {
+        if (light->isChild()) continue;
         ShowSceneObjectTree(light, selectedMesh, scene, nodeIdx);
+    }
+    for (auto camera : scene->getCameras()) {
+        if (camera->isChild()) continue;
+        ShowSceneObjectTree(camera, selectedMesh, scene, nodeIdx);
+    }
+    for (auto cube : scene->getCubes()) {
+        if (cube->isChild()) continue;
+        ShowSceneObjectTree(cube, selectedMesh, scene, nodeIdx);
+    }
+    for (auto plane : scene->getPlanes()) {
+        if (plane->isChild()) continue;
+        ShowSceneObjectTree(plane, selectedMesh, scene, nodeIdx);
     }
     ImGui::End();
 }

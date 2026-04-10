@@ -109,7 +109,9 @@ Mesh::Mesh(const std::string& objPath,
 }
 
 void Mesh::draw(Shader& shader) {
-    if (!isActive_) return;
+    if (!this->isEffectivelyActive()) return;
+
+    updateModelMatrix();
 
     if (material.hasAlbedoMap()) {
         material.getAlbedoMap()->bind(0);
@@ -160,13 +162,18 @@ void Mesh::draw(Shader& shader) {
 }
 
 void Mesh::shadowDraw(Shader& shader) {
-    if (!isActive_) return;
+    if (!this->isEffectivelyActive()) return;
+
+    updateModelMatrix();
+
     shader.setMat4("u_model", model_);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
 
 bool Mesh::intersectRay(const glm::vec3& rayOrigin, const glm::vec3& rayDir, float& hitDist) const {
+    updateModelMatrix();
+
     // 1. Fast AABB check
     AABB worldAABB = getWorldAABB();
     // Ray-AABB intersection (slab method)
@@ -213,4 +220,3 @@ bool Mesh::intersectRay(const glm::vec3& rayOrigin, const glm::vec3& rayDir, flo
     }
     return false;
 }
-
