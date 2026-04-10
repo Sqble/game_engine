@@ -1,20 +1,47 @@
+#!/bin/bash
 
 set -e
 
-set -x
-
 BUILD_DIR="build"
 
-if [ !k -d "$BUILD_DIR" ]; then
+if [ ! -d "$BUILD_DIR" ]; then
     mkdir "$BUILD_DIR"
 fi
 
-pushd "$BUILD_DIR"
+install_deps() {
+    echo "Installing dependencies..."
+    sudo pacman -S --needed cmake make gcc glfw-x11 glm mesa libepoxy
+}
 
-cmake ..
+configure_and_build() {
+    pushd "$BUILD_DIR"
 
-cmake --build . 
+    cmake .. -DCMAKE_BUILD_TYPE=Release
+    cmake --build . -j$(nproc)
 
-./game
+    popd
+}
 
-popd
+run_game() {
+    ./build/game
+}
+
+case "${1:-run}" in
+    deps)
+        install_deps
+        ;;
+    build)
+        configure_and_build
+        ;;
+    run)
+        configure_and_build
+        run_game
+        ;;
+    clean)
+        rm -rf "$BUILD_DIR"
+        ;;
+    *)
+        echo "Usage: $0 [deps|build|run|clean]"
+        exit 1
+        ;;
+esac

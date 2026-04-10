@@ -1,5 +1,5 @@
 #include "plane.h"
-#include <gl/glew.h>
+#include <epoxy/gl.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 //this class is deprecated, use Mesh with a plane obj instead

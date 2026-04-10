@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <GL/glew.h>
+#include <epoxy/gl.h>
 #include <unordered_map>
 #include <iostream>
 

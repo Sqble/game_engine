@@ -11,7 +11,7 @@ Scene::Scene(const std::string& name) : name_(name), activeCamera_(nullptr) {
 void Scene::generateGizmo() {
     if (gizmo_) delete gizmo_;
     //std::cout << "Generating gizmo for scene: " << name_ << std::endl;
-    gizmo_ = new Mesh("../assets/xyz_arrow.obj", Material("../assets/xyz_arrow.png"), glm::vec3(0,0,0), glm::vec3(1,1,1));
+    gizmo_ = new Mesh("assets/xyz_arrow.obj", Material("assets/xyz_arrow.png"), glm::vec3(0,0,0), glm::vec3(1,1,1));
     //gizmo_->setActive(false); // Start inactive
 }
 
@@ -328,6 +328,8 @@ bool Scene::loadFromFile(const std::string& filename, int screenWidth, int scree
     int camIdx = jscene.value("activeCamera", -1);
     if (camIdx >= 0 && camIdx < static_cast<int>(cameras_.size())) {
         activeCamera_ = cameras_[camIdx];
+    } else if (!cameras_.empty()) {
+        activeCamera_ = cameras_[0];
     }
 
     // Regenerate gizmo

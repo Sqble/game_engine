@@ -144,16 +144,28 @@ void ShowEngineUI(Scene* scene, int screenWidth, int screenHeight, SceneObject*&
     }
 
     static bool dockInit = false;
+    static int lastWidth = 0, lastHeight = 0;
+    static ImGuiID dockspace_id = 0;
+    bool needsReset = (screenWidth != lastWidth || screenHeight != lastHeight);
+    if (needsReset) {
+        dockInit = false;
+        lastWidth = screenWidth;
+        lastHeight = screenHeight;
+    }
+    
     ImGuiWindowFlags window_flags =  ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar;
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2((float)screenWidth, (float)screenHeight), ImGuiCond_Always);
 
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::Begin("EngineDockSpace", nullptr, window_flags);
+    
+    // Use unique name for each size to force reset
+    std::string dockName = "EngineDockSpace_" + std::to_string(screenWidth) + "x" + std::to_string(screenHeight);
+    ImGui::Begin(dockName.c_str(), nullptr, window_flags);
 
-    ImGuiID dockspace_id = ImGui::GetID("EngineDockSpace");
-    if (!dockInit) {
+    dockspace_id = ImGui::GetID("EngineDockSpace");
+    if (!dockInit || needsReset) {
         dockInit = true;
         ImGui::DockBuilderRemoveNode(dockspace_id);
         ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);

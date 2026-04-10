@@ -7,7 +7,7 @@
 #include <functional>
 #include <vector>
 
-#include <GL/glew.h>
+#include <epoxy/gl.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -114,49 +114,57 @@ int main() {
     glfwSetErrorCallback(errorCallback);
 
     //set opengl version and profile
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); //opengl 4.1
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#ifdef __linux__
+    glfwWindowHint(GLFW_CONTEXT_DEBUG, GLFW_TRUE);
+#endif
 
     float time = (float)glfwGetTime();
 
-    //create window
-    GLFWwindow *window = glfwCreateWindow(1920*1.5, 1080*1.5, "Game", nullptr, nullptr);
+    //create window - maximized borderless fullscreen
+    GLFWwindow *window = glfwCreateWindow(1920, 1080, "Game", glfwGetPrimaryMonitor(), nullptr);
+    if (!window) {
+        // Fallback to maximized windowed if fullscreen fails
+        window = glfwCreateWindow(1920, 1080, "Game", nullptr, nullptr);
+        if (window) {
+            glfwMaximizeWindow(window);
+        }
+    }
+
+    std::cout << "Window created: " << (window ? "yes" : "no") << std::endl;
 
     //set scroll callback 
-    glfwSetScrollCallback(window, scrollCallback);
+    if (window) glfwSetScrollCallback(window, scrollCallback);
     // set mouse move callback
-    glfwSetCursorPosCallback(window, mouseMoveCallback);
+    if (window) glfwSetCursorPosCallback(window, mouseMoveCallback);
     
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
-        glfwDestroyWindow(window);
         glfwTerminate();
         return -1;
     }
 
     //make opengl context current
+    std::cout << "Making context current..." << std::endl;
     glfwMakeContextCurrent(window);
+    std::cout << "Context made current." << std::endl;
     glfwSwapInterval(0);
+    std::cout << "Swap interval set." << std::endl;
+
+    // Epoxy handles OpenGL function loading automatically
+    std::cout << "OpenGL initialized: " << glGetString(GL_VERSION) << std::endl;
 
     // enable depth testing
-    glEnable(GL_DEPTH_TEST);
     glfwWindowHint(GLFW_DEPTH_BITS, 24);
+    glEnable(GL_DEPTH_TEST);
 
     // Enable backface culling
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW); // Default for most OBJ files
-
-    //initialize GLEW
-    glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK) {
-        std::cerr << "failed to initialize GLEW" << std::endl;
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        return -1;
-    }
 
     // Shadow map setup
     const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
@@ -196,8 +204,9 @@ int main() {
     (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; 
     ImGui::StyleColorsDark();
+    
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 410");
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     // Get screen dimensions
     
@@ -206,18 +215,17 @@ int main() {
     // Initialize shader
     Shader simpleShader;
     simpleShader.init(
-    FileManager::read("../src/shaders/simple.vs"), // Vertex shader source
-    FileManager::read("../src/shaders/simple.fs")  // Fragment shader source
+    FileManager::read("src/shaders/simple.vs"),
+    FileManager::read("src/shaders/simple.fs")
     );
 
     Shader shadowShader;
     shadowShader.init(
-        FileManager::read("../src/shaders/shadow_depth.vs"),
-        FileManager::read("../src/shaders/shadow_depth.fs")
+        FileManager::read("src/shaders/shadow_depth.vs"),
+        FileManager::read("src/shaders/shadow_depth.fs")
     );
 
     // Scene Setup
-    //std::cout << "loading scene now" << std::endl;
     Scene* scene = SceneManager::createScene("scene", true);
     scene->loadFromFile("scene.json", screenWidth, screenHeight);
     ShowToast("Scene loaded!");
@@ -368,20 +376,30 @@ int main() {
 
         // Rendering
         {
+            int fbWidth, fbHeight;
+            glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
+            glfwGetWindowSize(window, &screenWidth, &screenHeight);
+            
+            Scene* activeScene = SceneManager::getActiveScene();
+            Camera* activeCamera = scene->getActiveCamera();
+            if (activeCamera) {
+                activeCamera->updateProjection(fbWidth, fbHeight);
+            }
+            
             glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
             glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
             glClear(GL_DEPTH_BUFFER_BIT);
             shadowShader.use();
-            SceneManager::getActiveScene()->drawShadowMap(shadowShader);
+            activeScene->drawShadowMap(shadowShader);
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            glViewport(0, 0, screenWidth, screenHeight);
+            glViewport(0, 0, fbWidth, fbHeight);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             simpleShader.use();
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, depthMap);
             simpleShader.setInt("shadowMap", 4);
-            SceneManager::getActiveScene()->draw(simpleShader);
+            activeScene->draw(simpleShader);
             
             
             // Unbind the VAO
@@ -389,6 +407,8 @@ int main() {
         }
 
         // UI Rendering
+        ImGuiIO& io = ImGui::GetIO();
+        io.DisplaySize = ImVec2((float)screenWidth, (float)screenHeight);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();

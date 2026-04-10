@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include <GL/glew.h>
+#include <epoxy/gl.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -104,6 +104,16 @@ class Camera : public SceneObject {
         }
 
         bool isCamera() const override { return true; }
+        void updateProjection(int width, int height) {
+            screenWidth_ = width;
+            screenHeight_ = height;
+            projection_ = glm::perspective(
+                (float)M_PI_2,
+                (float)screenWidth_ / (float)screenHeight_,
+                0.01f,
+                100.0f
+            );
+        }
         void draw(class Shader& shader) override {
             // Camera does not draw anything
             (void)shader; // suppress unused parameter warning

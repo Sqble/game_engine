@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <gl/glew.h>
+#include <epoxy/gl.h>
 
 #include <map>
 #include <tuple>
