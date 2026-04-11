@@ -2,6 +2,7 @@
 #include "../src/camera/camera.h"
 #include "../src/file_manager/file_manager.h"
 #include "../src/frustum/frustum.h"
+#include "../src/game/contracts/contract_system.h"
 #include "../src/game/inventory/inventory_container.h"
 #include "../src/game/inventory/inventory_system.h"
 #include "../src/game/inventory/item_definition.h"
@@ -257,6 +258,28 @@ void RegisterSceneObjectTests(std::vector<TestCase>& tests) {
 
         ExpectVec3Equal(child.getLocalSize(), {5.0f, 5.0f, 5.0f}, "child local size should be relative to parent");
         ExpectVec3Equal(child.getSize(), {10.0f, 20.0f, 40.0f}, "child world size should match requested size");
+    });
+
+    AddTest(tests, suite, "objects start non-interactable", [] {
+        SceneObject::setIDCounter(0);
+        DummySceneObject object;
+
+        ExpectTrue(!object.isInteractable(), "objects should default to non-interactable");
+        ExpectEqual(object.getInteractionType(), std::string(""), "interaction type should default empty");
+        ExpectEqual(object.getInteractionPrompt(), std::string(""), "interaction prompt should default empty");
+    });
+
+    AddTest(tests, suite, "interaction metadata round-trips", [] {
+        SceneObject::setIDCounter(0);
+        DummySceneObject object;
+
+        object.setInteractable(true);
+        object.setInteractionType("ladder");
+        object.setInteractionPrompt("[E] Climb Ladder");
+
+        ExpectTrue(object.isInteractable(), "interactable flag should round-trip");
+        ExpectEqual(object.getInteractionType(), std::string("ladder"), "interaction type should round-trip");
+        ExpectEqual(object.getInteractionPrompt(), std::string("[E] Climb Ladder"), "interaction prompt should round-trip");
     });
 
     AddTest(tests, suite, "setRotation on child updates local space", [] {
@@ -810,6 +833,55 @@ void RegisterInventorySystemTests(std::vector<TestCase>& tests) {
     });
 }
 
+void RegisterContractSystemTests(std::vector<TestCase>& tests) {
+    const std::string suite = "ContractSystem suite";
+
+    AddTest(tests, suite, "starts without active cargo contract", [] {
+        ContractSystem contractSystem;
+        ExpectTrue(!contractSystem.hasActiveCargoContract(), "new contract systems should start empty");
+    });
+
+    AddTest(tests, suite, "requestCargoContract creates an active contract", [] {
+        ContractSystem contractSystem;
+        ExpectTrue(contractSystem.requestCargoContract(), "requesting without an active contract should succeed");
+        const CargoContract* contract = contractSystem.getActiveCargoContract();
+        ExpectTrue(contract != nullptr, "successful requests should produce an active contract");
+        ExpectTrue(!contract->contractId.empty(), "generated contracts should have an id");
+        ExpectTrue(contract->cargoCount > 0, "generated contracts should request at least one cargo unit");
+    });
+
+    AddTest(tests, suite, "requestCargoContract rejects duplicate active request", [] {
+        ContractSystem contractSystem;
+        contractSystem.requestCargoContract();
+        const CargoContract firstContract = *contractSystem.getActiveCargoContract();
+
+        ExpectTrue(!contractSystem.requestCargoContract(), "requesting while a contract is active should fail");
+        ExpectEqual(contractSystem.getActiveCargoContract()->contractId,
+                    firstContract.contractId,
+                    "duplicate requests should preserve the existing contract");
+    });
+
+    AddTest(tests, suite, "abandonActiveCargoContract clears the contract", [] {
+        ContractSystem contractSystem;
+        contractSystem.requestCargoContract();
+
+        ExpectTrue(contractSystem.abandonActiveCargoContract(), "abandoning an active contract should succeed");
+        ExpectTrue(!contractSystem.hasActiveCargoContract(), "abandoning should clear the active contract");
+        ExpectTrue(contractSystem.getActiveCargoContract() == nullptr, "cleared contracts should return null");
+    });
+
+    AddTest(tests, suite, "new requests rotate through templates after abandon", [] {
+        ContractSystem contractSystem;
+        contractSystem.requestCargoContract();
+        const std::string firstId = contractSystem.getActiveCargoContract()->contractId;
+        contractSystem.abandonActiveCargoContract();
+        contractSystem.requestCargoContract();
+        const std::string secondId = contractSystem.getActiveCargoContract()->contractId;
+
+        ExpectTrue(firstId != secondId, "subsequent requests should advance to the next template");
+    });
+}
+
 void RegisterUndoManagerTests(std::vector<TestCase>& tests) {
     const std::string suite = "UndoManager suite";
 
@@ -1284,6 +1356,7 @@ std::vector<TestCase> BuildTests() {
     RegisterSceneObjectTests(tests);
     RegisterInventoryContainerTests(tests);
     RegisterInventorySystemTests(tests);
+    RegisterContractSystemTests(tests);
     RegisterUndoManagerTests(tests);
     RegisterCameraAndRaycastTests(tests);
     RegisterAabbAndFrustumTests(tests);

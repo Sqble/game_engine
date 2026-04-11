@@ -16,10 +16,19 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <cstdio>
 #include <sstream>
 
 static std::string toastMessage;
 static std::chrono::steady_clock::time_point toastEndTime;
+
+static void CopyStringToBuffer(char* buffer, size_t bufferSize, const std::string& value) {
+    if (!buffer || bufferSize == 0) {
+        return;
+    }
+
+    std::snprintf(buffer, bufferSize, "%s", value.c_str());
+}
 
 static std::string GetInventorySlotLabel(const InventorySlot& slot) {
     if (slot.isEmpty()) {
@@ -240,6 +249,97 @@ LockerUIAction RenderLockerUI(int screenWidth,
     return action;
 }
 
+TerminalUIAction RenderTerminalUI(int screenWidth,
+                                  int screenHeight,
+                                  float submarineHealth,
+                                  const CargoContract* activeContract) {
+    TerminalUIAction action;
+    ImGui::SetNextWindowPos(ImVec2(screenWidth * 0.5f, screenHeight * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowSize(ImVec2(780.0f, 480.0f), ImGuiCond_Always);
+
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.02f, 0.06f, 0.03f, 0.98f));
+    ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.04f, 0.12f, 0.07f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.06f, 0.18f, 0.10f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.20f, 0.62f, 0.35f, 0.8f));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.72f, 0.95f, 0.76f, 1.0f));
+
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings;
+    bool terminalOpen = true;
+    if (!ImGui::Begin("Control Terminal", &terminalOpen, flags)) {
+        ImGui::End();
+        ImGui::PopStyleColor(5);
+        if (!terminalOpen) {
+            action.type = TerminalUIActionType::Close;
+        }
+        return action;
+    }
+
+    const float hullPercent = std::clamp(submarineHealth / 100.0f, 0.0f, 1.0f);
+
+    ImGui::TextUnformatted("CONNECTED TO SUBMARINE CONTROL BUS");
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    if (ImGui::BeginTabBar("##TerminalTabs")) {
+        if (ImGui::BeginTabItem("Ship Status")) {
+            ImGui::Text("Hull Integrity");
+            ImGui::ProgressBar(hullPercent, ImVec2(-1.0f, 0.0f));
+            ImGui::Text("Integrity reading: %.0f%%", hullPercent * 100.0f);
+            ImGui::Spacing();
+            ImGui::TextUnformatted("Primary lighting circuit: unstable");
+            ImGui::TextUnformatted("External sonar: offline");
+            ImGui::TextUnformatted("Docking system: standby");
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Contracts")) {
+            if (!activeContract) {
+                ImGui::TextUnformatted("No active cargo contract loaded.");
+                ImGui::Spacing();
+                ImGui::TextWrapped("Request a freight job from command. The terminal will queue one cargo run at a time until the mission layer handles completion and delivery checks.");
+                ImGui::Spacing();
+                if (ImGui::Button("Request Cargo Contract", ImVec2(220.0f, 0.0f))) {
+                    action.type = TerminalUIActionType::RequestCargoContract;
+                }
+            } else {
+                ImGui::Text("Contract %s", activeContract->contractId.c_str());
+                ImGui::Separator();
+                ImGui::TextWrapped("Deliver %d x %s to %s.",
+                                   activeContract->cargoCount,
+                                   activeContract->cargoLabel.c_str(),
+                                   activeContract->destinationName.c_str());
+                ImGui::Spacing();
+                ImGui::Text("Pickup: %s", activeContract->pickupName.c_str());
+                ImGui::Text("Destination: %s", activeContract->destinationName.c_str());
+                ImGui::Text("Reward: %d credits", activeContract->rewardCredits);
+                ImGui::Text("Status: %s", activeContract->statusText.c_str());
+                ImGui::Spacing();
+                ImGui::TextWrapped("Delivery tracking is not wired into docking checks yet, but the contract is now live and visible from the terminal.");
+                ImGui::Spacing();
+                if (ImGui::Button("Abandon Contract", ImVec2(200.0f, 0.0f))) {
+                    action.type = TerminalUIActionType::AbandonCargoContract;
+                }
+            }
+            ImGui::EndTabItem();
+        }
+
+        ImGui::EndTabBar();
+    }
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::TextDisabled("Press E or Esc to disconnect");
+
+    ImGui::End();
+    ImGui::PopStyleColor(5);
+
+    if (!terminalOpen) {
+        action.type = TerminalUIActionType::Close;
+    }
+
+    return action;
+}
+
 static UndoManager undoManager;
 
 static void RestoreHierarchyFromState(Scene* scene, SceneObject* obj, const json& state) {
@@ -280,6 +380,9 @@ static void ApplySerializedState(Scene* scene, SceneObject* obj, const json& sta
     obj->setSize(newState->getSize());
     obj->setColor(newState->getColor());
     obj->setActive(newState->isActive());
+    obj->setInteractable(newState->isInteractable());
+    obj->setInteractionType(newState->getInteractionType());
+    obj->setInteractionPrompt(newState->getInteractionPrompt());
 
     if (auto light = dynamic_cast<LightObject*>(obj)) {
         if (auto newLight = dynamic_cast<LightObject*>(newState)) {
@@ -461,8 +564,11 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
             static glm::vec3 editColor;
             static glm::vec3 editDirection;
             static bool editActive;
+            static bool editInteractable;
             static float editIntensity;
             static float editCutoff;
+            static char editInteractionType[64] = "";
+            static char editInteractionPrompt[128] = "";
             static SceneObject* lastMesh = nullptr;
 
             // If a new mesh is selected, update edit values to match its properties
@@ -493,6 +599,9 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                     editRot = selectedCamera->getRotation();
                     editActive = selectedCamera->isActive();
                 }
+                editInteractable = selectedMesh->isInteractable();
+                CopyStringToBuffer(editInteractionType, sizeof(editInteractionType), selectedMesh->getInteractionType());
+                CopyStringToBuffer(editInteractionPrompt, sizeof(editInteractionPrompt), selectedMesh->getInteractionPrompt());
                 lastMesh = selectedMesh;
             }
 
@@ -635,6 +744,37 @@ static void ShowSceneEditingWindow(Scene* scene, int screenWidth, int screenHeig
                     undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
                 }
             }
+
+            ImGui::Separator();
+            ImGui::Text("Interaction");
+            json beforeState, afterState;
+            int objId = selectedMesh->getId() ? selectedMesh->getId() : 0;
+
+            bool interactableChanged = ImGui::Checkbox("Interactable", &editInteractable);
+            if (interactableChanged && editInteractable != selectedMesh->isInteractable()) {
+                beforeState = serializeObject(selectedMesh);
+                selectedMesh->setInteractable(editInteractable);
+                afterState = serializeObject(selectedMesh);
+                undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
+            }
+
+            ImGui::BeginDisabled(!editInteractable);
+            bool interactionTypeChanged = ImGui::InputText("Interaction Type", editInteractionType, IM_ARRAYSIZE(editInteractionType));
+            if (interactionTypeChanged && std::string(editInteractionType) != selectedMesh->getInteractionType()) {
+                beforeState = serializeObject(selectedMesh);
+                selectedMesh->setInteractionType(editInteractionType);
+                afterState = serializeObject(selectedMesh);
+                undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
+            }
+
+            bool interactionPromptChanged = ImGui::InputText("Interaction Prompt", editInteractionPrompt, IM_ARRAYSIZE(editInteractionPrompt));
+            if (interactionPromptChanged && std::string(editInteractionPrompt) != selectedMesh->getInteractionPrompt()) {
+                beforeState = serializeObject(selectedMesh);
+                selectedMesh->setInteractionPrompt(editInteractionPrompt);
+                afterState = serializeObject(selectedMesh);
+                undoManager.pushAction({UndoManager::Action::Transform, beforeState, afterState, objId});
+            }
+            ImGui::EndDisabled();
 
             // --- Undo for Delete ---
             if (ImGui::Button("Delete Object")) {

@@ -25,6 +25,9 @@ public:
     virtual void setActive(bool active) { isActive_ = active; }
     void setTag(const std::string& tag) { tag_ = tag; }
     void setId(int id) { id_ = id; }
+    void setInteractable(bool interactable) { isInteractable_ = interactable; }
+    void setInteractionType(const std::string& interactionType) { interactionType_ = interactionType; }
+    void setInteractionPrompt(const std::string& interactionPrompt) { interactionPrompt_ = interactionPrompt; }
 
     bool setParent(SceneObject* parent, bool keepWorldTransform = true);
     bool addChild(SceneObject* child, bool keepWorldTransform = true);
@@ -60,6 +63,9 @@ public:
     std::string getTag() const { return tag_; }
     int getId() const { return id_; }
     int getParentId() const;
+    bool isInteractable() const { return isInteractable_; }
+    const std::string& getInteractionType() const { return interactionType_; }
+    const std::string& getInteractionPrompt() const { return interactionPrompt_; }
 
     glm::vec3 getLocalPosition() const { return position_; }
     glm::vec3 getLocalSize() const { return size_; }
@@ -82,6 +88,9 @@ protected:
     bool isActive_;
     std::string tag_;
     int id_;
+    bool isInteractable_;
+    std::string interactionType_;
+    std::string interactionPrompt_;
 
 private:
     bool wouldCreateCycle(const SceneObject* newParent) const;

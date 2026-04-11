@@ -15,6 +15,22 @@ int getSerializedParentId(const json& j) {
     return j.value("parentId", -1);
 }
 
+void applyLegacyInteractionDefaults(SceneObject* object, const std::string& tag) {
+    if (!object) {
+        return;
+    }
+
+    if (tag == "computer") {
+        object->setInteractable(true);
+        object->setInteractionType("computer");
+        object->setInteractionPrompt("[E] Use Computer");
+    } else if (tag == "locker") {
+        object->setInteractable(true);
+        object->setInteractionType("locker");
+        object->setInteractionPrompt("[E] Open Locker");
+    }
+}
+
 glm::vec3 chooseUpVector(const glm::vec3& forward) {
     const glm::vec3 normalizedForward = glm::normalize(forward);
     const glm::vec3 worldUp(0.0f, 1.0f, 0.0f);
@@ -243,6 +259,9 @@ json serializeObject(const SceneObject* obj) {
     j["active"] = obj->isActive();
     j["tag"] = obj->getTag();
     j["id"] = obj->getId();
+    j["interactable"] = obj->isInteractable();
+    j["interactionType"] = obj->getInteractionType();
+    j["interactionPrompt"] = obj->getInteractionPrompt();
     j["parentId"] = obj->getParentId();
     j["parent"] = obj->getParentId();
     j["isParent"] = obj->isParent();
@@ -361,6 +380,18 @@ SceneObject* deserializeObject(const json& j, int screenWidth, int screenHeight)
     }
 
     object->setTag(tag);
+    const bool hasInteractionFields = j.contains("interactable") || j.contains("interactionType") || j.contains("interactionPrompt");
+    if (hasInteractionFields) {
+        const std::string interactionType = j.value("interactionType", "");
+        const std::string interactionPrompt = j.value("interactionPrompt", "");
+        const bool interactable = j.value("interactable", !interactionType.empty() || !interactionPrompt.empty());
+        object->setInteractable(interactable);
+        object->setInteractionType(interactionType);
+        object->setInteractionPrompt(interactionPrompt);
+    } else {
+        applyLegacyInteractionDefaults(object, tag);
+    }
+
     if (id != 0) {
         object->setId(id);
     }

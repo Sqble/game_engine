@@ -1,4 +1,5 @@
 #pragma once
+#include "../game/contracts/contract_system.h"
 #include "../game/inventory/inventory_container.h"
 #include "../scene/scene.h"
 
@@ -14,6 +15,17 @@ enum class LockerUIActionType {
 struct LockerUIAction {
     LockerUIActionType type = LockerUIActionType::None;
     int slotIndex = -1;
+};
+
+enum class TerminalUIActionType {
+    None,
+    Close,
+    RequestCargoContract,
+    AbandonCargoContract,
+};
+
+struct TerminalUIAction {
+    TerminalUIActionType type = TerminalUIActionType::None;
 };
 
 void ShowEngineUI(Scene* scene, int screenWidth, int screenHeight, SceneObject*& selectedMesh, bool& sceneEditingMode, Camera*& camera);
@@ -32,4 +44,8 @@ LockerUIAction RenderInventoryBar(int screenWidth,
 LockerUIAction RenderLockerUI(int screenWidth,
                               int screenHeight,
                               const InventoryContainer& lockerInventory);
+TerminalUIAction RenderTerminalUI(int screenWidth,
+                                  int screenHeight,
+                                  float submarineHealth,
+                                  const CargoContract* activeContract);
 void ShowToast(const std::string& message, float durationSeconds = 4.0f);

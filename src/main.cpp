@@ -34,6 +34,7 @@
 //Game logic includes
 #include "game/inventory/inventory_system.h"
 #include "game/inventory/item_definition.h"
+#include "game/contracts/contract_system.h"
 #include "game/submarine/submarine.h"
 
 void errorCallback(int error, const char *description) {
@@ -267,14 +268,16 @@ int main() {
     SceneObject* selectedMesh = nullptr;
     SceneObject* interactTarget = nullptr;
     std::string interactionPrompt;
+    bool terminalOpen = false;
     const float interactionRange = 3.0f;
     InventorySystem inventorySystem(8, 6);
+    ContractSystem contractSystem;
 
     std::vector<int> lockerIds;
-    const std::vector<SceneObject*> lockers = scene->getObjectsWithTag("locker");
-    lockerIds.reserve(lockers.size());
-    for (SceneObject* locker : lockers) {
-        lockerIds.push_back(locker->getId());
+    for (SceneObject* object : scene->getMeshes()) {
+        if (object->getInteractionType() == "locker") {
+            lockerIds.push_back(object->getId());
+        }
     }
     inventorySystem.initializeLockers(lockerIds);
     if (!lockerIds.empty()) {
@@ -304,7 +307,7 @@ int main() {
         float last_time = time;
         time = (float)glfwGetTime();
         dt = time - last_time;
-        const bool gameplayInputEnabled = !sceneEditingMode && !inventorySystem.isLockerOpen();
+        const bool gameplayInputEnabled = !sceneEditingMode && !inventorySystem.isLockerOpen() && !terminalOpen;
 
         //background color
         float red = 0;
@@ -378,7 +381,7 @@ int main() {
         lastKeySPressed = altPressed && keySPressed;
 
         // Keep GLFW cursor mode aligned with edit/game mode.
-        int desiredCursorMode = (sceneEditingMode || inventorySystem.isLockerOpen()) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
+        int desiredCursorMode = (sceneEditingMode || inventorySystem.isLockerOpen() || terminalOpen) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
         int currentCursorMode = glfwGetInputMode(window, GLFW_CURSOR);
         if (currentCursorMode != desiredCursorMode) {
             glfwSetInputMode(window, GLFW_CURSOR, desiredCursorMode);
@@ -418,19 +421,15 @@ int main() {
         }
 
         auto getInteractionPromptForObject = [](SceneObject* object) -> std::string {
-            if (!object) {
+            if (!object || !object->isInteractable()) {
                 return "";
             }
 
-            const std::string tag = object->getTag();
-            if (tag == "computer") {
-                return "[E] Use Computer";
-            }
-            if (tag == "locker") {
-                return "[E] Open Locker";
+            if (!object->getInteractionPrompt().empty()) {
+                return object->getInteractionPrompt();
             }
 
-            return "";
+            return "[E] Interact";
         };
 
         interactionPrompt.clear();
@@ -469,15 +468,22 @@ int main() {
 
         bool keyEPressed = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS;
         bool keyEscapePressed = glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
-        if (inventorySystem.isLockerOpen() && ((keyEPressed && !lastKeyEState) || (keyEscapePressed && !lastKeyEscapeState))) {
+        if (terminalOpen && ((keyEPressed && !lastKeyEState) || (keyEscapePressed && !lastKeyEscapeState))) {
+            terminalOpen = false;
+        } else if (inventorySystem.isLockerOpen() && ((keyEPressed && !lastKeyEState) || (keyEscapePressed && !lastKeyEscapeState))) {
             inventorySystem.closeLocker();
         } else if (!sceneEditingMode && interactTarget && keyEPressed && !lastKeyEState) {
-            const std::string tag = interactTarget->getTag();
-            if (tag == "computer") {
-                ShowToast("Computer interaction not implemented yet.");
-            } else if (tag == "locker") {
+            const std::string interactionType = interactTarget->getInteractionType();
+            if (interactionType == "computer") {
+                terminalOpen = true;
+                ShowToast("Connected to terminal.");
+            } else if (interactionType == "locker") {
                 inventorySystem.openLocker(interactTarget->getId());
                 ShowToast("Locker opened.");
+            } else if (interactionType == "ladder") {
+                ShowToast("Ladder interaction triggered. Climbing not implemented yet.");
+            } else if (!interactionType.empty()) {
+                ShowToast("Interaction '" + interactionType + "' not implemented yet.");
             }
         }
         lastKeyEState = keyEPressed;
@@ -527,7 +533,7 @@ int main() {
         ShowEngineUI(scene, screenWidth, screenHeight, selectedMesh, sceneEditingMode, camera);
         RenderToast(screenWidth);
         LockerUIAction inventoryBarAction;
-        if (!sceneEditingMode) {
+        if (!sceneEditingMode && !terminalOpen) {
             RenderInteractionPrompt(screenWidth, screenHeight, interactionPrompt);
             inventoryBarAction = RenderInventoryBar(screenWidth,
                                                     screenHeight,
@@ -559,6 +565,27 @@ int main() {
                     } else {
                         ShowToast("Inventory is full.");
                     }
+                }
+            }
+        }
+        if (terminalOpen) {
+            const TerminalUIAction action = RenderTerminalUI(screenWidth,
+                                                             screenHeight,
+                                                             submarine.getHealth(),
+                                                             contractSystem.getActiveCargoContract());
+            if (action.type == TerminalUIActionType::Close) {
+                terminalOpen = false;
+            } else if (action.type == TerminalUIActionType::RequestCargoContract) {
+                if (contractSystem.requestCargoContract()) {
+                    const CargoContract* contract = contractSystem.getActiveCargoContract();
+                    const std::string contractLabel = contract ? contract->contractId : "cargo contract";
+                    ShowToast("Accepted " + contractLabel + ".");
+                } else {
+                    ShowToast("A cargo contract is already active.");
+                }
+            } else if (action.type == TerminalUIActionType::AbandonCargoContract) {
+                if (contractSystem.abandonActiveCargoContract()) {
+                    ShowToast("Cargo contract abandoned.");
                 }
             }
         }

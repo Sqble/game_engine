@@ -44,6 +44,7 @@ if(BUILD_TESTING)
         src/file_manager/file_manager.cpp
         src/raycast/raycast.cpp
         src/sceneobject/sceneobject.cpp
+        src/game/contracts/contract_system.cpp
         src/game/inventory/item_definition.cpp
         src/game/inventory/inventory_container.cpp
         src/game/inventory/inventory_system.cpp
@@ -57,6 +58,7 @@ if(BUILD_TESTING)
         "CameraAndRaycast suite"
         "FileItemAndLight suite"
         "InventoryContainer suite"
+        "ContractSystem suite"
         "SceneObject suite"
         "InventorySystem suite"
         "UndoManager suite"

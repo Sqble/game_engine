@@ -15,7 +15,10 @@ SceneObject::SceneObject(const glm::vec3& position,
       rotation_(rotation),
       isActive_(isActive),
       tag_(""),
-      id_(assignNextId()) {}
+      id_(assignNextId()),
+      isInteractable_(false),
+      interactionType_(""),
+      interactionPrompt_("") {}
 
 int SceneObject::assignNextId() {
     return sceneObjectIdCounter++;
